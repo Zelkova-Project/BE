@@ -33,4 +33,8 @@ public class NoticeService {
     public Page<NoticePreviewResponse> getNoticePreviews(Pageable pageable) {
         return noticeReader.findAll(pageable);
     }
+
+    public NoticeResponse getNotice(Long noticeId) {
+        return noticeReader.findByNoticeId(noticeId);
+    }
 }
