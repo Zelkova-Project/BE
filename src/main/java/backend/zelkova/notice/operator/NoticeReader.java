@@ -1,7 +1,10 @@
 package backend.zelkova.notice.operator;
 
+import backend.zelkova.exception.CustomException;
+import backend.zelkova.exception.ExceptionStatus;
 import backend.zelkova.notice.dto.response.NoticePreviewResponse;
 import backend.zelkova.notice.dto.response.NoticeResponse;
+import backend.zelkova.notice.entity.Notice;
 import backend.zelkova.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,5 +23,10 @@ public class NoticeReader {
 
     public NoticeResponse findNoticeResponseByNoticeId(Long noticeId) {
         return noticeRepository.retrieveNoticeResponse(noticeId);
+    }
+
+    public Notice findById(Long noticeId) {
+        return noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.NOTFOUND));
     }
 }
