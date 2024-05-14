@@ -7,12 +7,11 @@ import backend.zelkova.exception.ExceptionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(readOnly = true, propagation = Propagation.MANDATORY)
+@Transactional(readOnly = true)
 public class AccountReader {
 
     private final AccountRepository accountRepository;

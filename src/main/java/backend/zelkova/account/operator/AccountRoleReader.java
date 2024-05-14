@@ -7,12 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(readOnly = true, propagation = Propagation.MANDATORY)
+@Transactional(readOnly = true)
 public class AccountRoleReader {
 
     private final AccountRoleRepository accountRoleRepository;
