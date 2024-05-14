@@ -4,6 +4,7 @@ import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.notice.dto.response.NoticePreviewResponse;
+import backend.zelkova.notice.dto.response.NoticeResponse;
 import backend.zelkova.notice.entity.Notice;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -42,6 +43,66 @@ class NoticeRepositoryImplTest extends IntegrationTestSupport {
     void tearDown() {
         noticeRepository.deleteAllInBatch();
         accountRepository.deleteAllInBatch();
+    }
+
+    @Test
+    @DisplayName("이전글, 다음글 포함해서 조회하기")
+    void retrieveNotice() throws Exception {
+
+        // given
+
+        // when
+        NoticeResponse noticeResponse = noticeRepository.retrieveNoticeResponse(middleNotice.getId());
+
+        // then
+        Assertions.assertThat(noticeResponse).extracting(NoticeResponse::title, NoticeResponse::content)
+                .containsExactly("세번째", "내용");
+
+        Assertions.assertThat(noticeResponse.prev().title())
+                .isEqualTo("두번째");
+
+        Assertions.assertThat(noticeResponse.next().title())
+                .isEqualTo("네번째");
+    }
+
+    @Test
+    @DisplayName("이전글 없음")
+    void retrieveNoticePrevNull() throws Exception {
+
+        // given
+
+        // when
+        NoticeResponse noticeResponse = noticeRepository.retrieveNoticeResponse(firstNotice.getId());
+
+        // then
+        Assertions.assertThat(noticeResponse).extracting(NoticeResponse::title, NoticeResponse::content)
+                .containsExactly("첫번째", "내용");
+
+        Assertions.assertThat(noticeResponse.prev())
+                .isNull();
+
+        Assertions.assertThat(noticeResponse.next().title())
+                .isEqualTo("두번째");
+    }
+
+    @Test
+    @DisplayName("다음글 없음")
+    void retrieveNoticeNextNull() throws Exception {
+
+        // given
+
+        // when
+        NoticeResponse noticeResponse = noticeRepository.retrieveNoticeResponse(lastNotice.getId());
+
+        // then
+        Assertions.assertThat(noticeResponse).extracting(NoticeResponse::title, NoticeResponse::content)
+                .containsExactly("다섯번째", "내용");
+
+        Assertions.assertThat(noticeResponse.prev().title())
+                .isEqualTo("네번째");
+
+        Assertions.assertThat(noticeResponse.next())
+                .isNull();
     }
 
     @Test
