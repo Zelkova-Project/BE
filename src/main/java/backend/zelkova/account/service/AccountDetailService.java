@@ -24,7 +24,7 @@ public class AccountDetailService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         Account account = accountReader.findAccountByLoginId(loginId);
-        Set<Role> roles = accountRoleReader.findRolesByAccountId(account.getId())
+        Set<Role> roles = accountRoleReader.findRolesByAccountId(account.getId());
 
         return new AccountDetail(account.getId(), account.getLoginId(), account.getPassword(), roles);
     }
