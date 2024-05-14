@@ -1,6 +1,7 @@
 package backend.zelkova.account.model;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,7 +24,7 @@ public class AccountDetail implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Collections.unmodifiableSet(authorities);
     }
 
     @Override
