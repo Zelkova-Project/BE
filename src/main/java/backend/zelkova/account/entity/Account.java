@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,17 +31,14 @@ public class Account extends BaseEntity {
 
     private String nickname;
 
-    private String introduce;
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String email;
 
-    private LocalDate birthDate;
-
-    public Account(String loginId, String password, String name, String nickname, String introduce,
-                   LocalDate birthDate) {
+    public Account(String loginId, String password, String name, String nickname, String email) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.nickname = nickname;
-        this.introduce = introduce;
-        this.birthDate = birthDate;
+        this.email = email;
     }
 }
