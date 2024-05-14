@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class Notice extends BaseEntity {
 
     @Id
+    @Column(name = "notice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
