@@ -3,6 +3,8 @@ package backend.zelkova.notice.service;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.operator.AccountReader;
+import backend.zelkova.exception.CustomException;
+import backend.zelkova.exception.ExceptionStatus;
 import backend.zelkova.notice.dto.response.NoticePreviewResponse;
 import backend.zelkova.notice.dto.response.NoticeResponse;
 import backend.zelkova.notice.entity.Notice;
@@ -36,5 +38,17 @@ public class NoticeService {
 
     public NoticeResponse getNotice(Long noticeId) {
         return noticeReader.findNoticeResponseByNoticeId(noticeId);
+    }
+
+    public void update(AccountDetail accountDetail, Long noticeId, String title, String content) {
+        Notice notice = noticeReader.findById(noticeId);
+        Account ownAccount = notice.getAccount();
+
+        if (ownAccount.getId().equals(accountDetail.getAccountId())) {
+            notice.update(title, content);
+            return;
+        }
+
+        throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
 }
