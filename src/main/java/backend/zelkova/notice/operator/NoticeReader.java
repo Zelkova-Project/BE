@@ -18,7 +18,7 @@ public class NoticeReader {
         return noticeRepository.retrieveAllNoticesResponses(pageable);
     }
 
-    public NoticeResponse findByNoticeId(Long noticeId) {
+    public NoticeResponse findNoticeResponseByNoticeId(Long noticeId) {
         return noticeRepository.retrieveNoticeResponse(noticeId);
     }
 }

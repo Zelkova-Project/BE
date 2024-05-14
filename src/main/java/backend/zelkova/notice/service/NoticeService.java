@@ -35,6 +35,6 @@ public class NoticeService {
     }
 
     public NoticeResponse getNotice(Long noticeId) {
-        return noticeReader.findByNoticeId(noticeId);
+        return noticeReader.findNoticeResponseByNoticeId(noticeId);
     }
 }
