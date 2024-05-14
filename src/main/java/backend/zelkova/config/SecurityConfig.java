@@ -28,7 +28,7 @@ public class SecurityConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.NEVER));
 
         http.authorizeHttpRequests(authorizeRequests -> {
-            authorizeRequests.requestMatchers(HttpMethod.POST, "/accounts/signup", "/accounts/login")
+            authorizeRequests.requestMatchers(HttpMethod.POST, "/signup", "/login")
                     .permitAll();
 
             authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**")
