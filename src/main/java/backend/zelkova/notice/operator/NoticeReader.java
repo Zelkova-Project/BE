@@ -1,6 +1,7 @@
 package backend.zelkova.notice.operator;
 
 import backend.zelkova.notice.dto.response.NoticePreviewResponse;
+import backend.zelkova.notice.dto.response.NoticeResponse;
 import backend.zelkova.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,5 +16,9 @@ public class NoticeReader {
 
     public Page<NoticePreviewResponse> findAll(Pageable pageable) {
         return noticeRepository.retrieveAllNoticesResponses(pageable);
+    }
+
+    public NoticeResponse findByNoticeId(Long noticeId) {
+        return noticeRepository.retrieveNoticeResponse(noticeId);
     }
 }
