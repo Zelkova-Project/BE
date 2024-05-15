@@ -69,4 +69,8 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
+    public void move(Category category) {
+        this.category = category;
+    }
 }
