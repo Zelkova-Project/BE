@@ -57,8 +57,8 @@ public class NoticeService {
     public void delete(AccountDetail accountDetail, Long noticeId) {
         Notice notice = noticeReader.findById(noticeId);
 
-        if (hasPermission(notice, accountDetail) {
-           noticeSupplier.delete(notice);
+        if (hasPermission(notice, accountDetail)) {
+            noticeSupplier.delete(notice);
             return;
         }
 
@@ -66,7 +66,7 @@ public class NoticeService {
     }
 
     private boolean hasPermission(Notice notice, AccountDetail accountDetail) {
-        return isOwner(notice, accountDetail.getAccountId()) || hasRole(accountDetail)
+        return isOwner(notice, accountDetail.getAccountId()) || hasRole(accountDetail);
     }
 
     private boolean isOwner(Notice notice, Long accountId) {
