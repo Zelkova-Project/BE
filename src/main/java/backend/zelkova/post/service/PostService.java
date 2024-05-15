@@ -70,6 +70,19 @@ public class PostService {
     }
 
     @Transactional
+    public void move(AccountDetail accountDetail, Long noticeId, Category category) {
+
+        Post post = postReader.findById(noticeId);
+
+        if (postPermissionValidator.hasPermission(post, accountDetail.getAccountId())) {
+            post.move(category);
+            return;
+        }
+
+        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+    }
+
+    @Transactional
     public void delete(AccountDetail accountDetail, Long noticeId) {
         Post post = postReader.findById(noticeId);
 
