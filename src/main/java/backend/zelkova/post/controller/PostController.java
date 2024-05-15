@@ -5,8 +5,8 @@ import backend.zelkova.post.dto.request.PostDeleteRequest;
 import backend.zelkova.post.dto.request.PostMoveRequest;
 import backend.zelkova.post.dto.request.PostRequest;
 import backend.zelkova.post.dto.request.PostUpdateRequest;
+import backend.zelkova.post.dto.response.PostAndCommentResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
-import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.service.PostService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -36,9 +36,9 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostPreviews(pageable));
     }
 
-    @GetMapping("/{noticeId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long noticeId) {
-        return ResponseEntity.ok(postService.getPost(noticeId));
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostAndCommentResponse> getPost(@PathVariable Long postId) {
+        return ResponseEntity.ok(postService.getPost(postId));
     }
 
     @PostMapping

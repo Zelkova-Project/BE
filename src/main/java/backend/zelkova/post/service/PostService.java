@@ -3,8 +3,11 @@ package backend.zelkova.post.service;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.operator.AccountReader;
+import backend.zelkova.comment.model.PostCommentResponse;
+import backend.zelkova.comment.operator.CommentReader;
 import backend.zelkova.exception.CustomException;
 import backend.zelkova.exception.ExceptionStatus;
+import backend.zelkova.post.dto.response.PostAndCommentResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
@@ -14,6 +17,7 @@ import backend.zelkova.post.operator.PostManager;
 import backend.zelkova.post.operator.PostPermissionValidator;
 import backend.zelkova.post.operator.PostReader;
 import backend.zelkova.post.operator.PostSupplier;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +34,7 @@ public class PostService {
     private final PostReader postReader;
     private final PostPermissionValidator postPermissionValidator;
     private final PostManager postManager;
+    private final CommentReader commentReader;
 
     @Transactional
     public Long write(AccountDetail accountDetail, Category category, Visibility visibility,
@@ -51,8 +56,10 @@ public class PostService {
         return postReader.findAll(pageable);
     }
 
-    public PostResponse getPost(Long noticeId) {
-        return postReader.findPostResponseByPostId(noticeId);
+    public PostAndCommentResponse getPost(Long postId) {
+        PostResponse postResponse = postReader.findPostResponseByPostId(postId);
+        List<PostCommentResponse> postComments = commentReader.findPostComments(postId);
+        return new PostAndCommentResponse(postResponse, postComments);
     }
 
     @Transactional
