@@ -45,10 +45,10 @@ public class PostController {
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
                                       @RequestBody @Valid PostRequest postRequest) {
 
-        Long noticeId = postService.write(accountDetail, postRequest.getCategory(), postRequest.getVisibility(),
+        Long postId = postService.write(accountDetail, postRequest.getCategory(), postRequest.getVisibility(),
                 postRequest.getTitle(), postRequest.getContent());
 
-        return ResponseEntity.created(URI.create("/notices/" + noticeId))
+        return ResponseEntity.created(URI.create("/posts/" + postId))
                 .build();
     }
 
