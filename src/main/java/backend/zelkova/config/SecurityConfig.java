@@ -33,11 +33,8 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers(HttpMethod.POST, "/signup", "/login")
                     .permitAll();
 
-            authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**", "/notices/**")
+            authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**")
                     .permitAll();
-
-            authorizeRequests.requestMatchers("/notices/**")
-                    .hasAnyRole("ADMIN", "MANAGER");
 
             authorizeRequests.anyRequest()
                     .authenticated();
