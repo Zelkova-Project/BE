@@ -36,6 +36,9 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**")
                     .permitAll();
 
+            authorizeRequests.requestMatchers("/roles/**")
+                    .hasRole("ADMIN");
+
             authorizeRequests.anyRequest()
                     .authenticated();
         });
