@@ -8,6 +8,9 @@ import backend.zelkova.exception.ExceptionStatus;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
+import backend.zelkova.post.model.Category;
+import backend.zelkova.post.model.Visibility;
+import backend.zelkova.post.operator.PostManager;
 import backend.zelkova.post.operator.PostPermissionValidator;
 import backend.zelkova.post.operator.PostReader;
 import backend.zelkova.post.operator.PostSupplier;
@@ -26,12 +29,22 @@ public class PostService {
     private final PostSupplier postSupplier;
     private final PostReader postReader;
     private final PostPermissionValidator postPermissionValidator;
+    private final PostManager postManager;
 
     @Transactional
-    public Long write(AccountDetail accountDetail, String title, String content) {
-        Account account = accountReader.findAccountById(accountDetail.getAccountId());
-        Post post = postSupplier.supply(account, title, content);
-        return post.getId();
+    public Long write(AccountDetail accountDetail, Category category, Visibility visibility,
+                      String title, String content) {
+
+        Long accountId = accountDetail.getAccountId();
+
+        if (postPermissionValidator.hasPermission(category, accountId)) {
+            Account account = accountReader.findAccountById(accountId);
+            Post post = postSupplier.supply(account, category, visibility, title, content);
+
+            return post.getId();
+        }
+
+        throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
 
     public Page<PostPreviewResponse> getPostPreviews(Pageable pageable) {
@@ -43,11 +56,13 @@ public class PostService {
     }
 
     @Transactional
-    public void update(AccountDetail accountDetail, Long noticeId, String title, String content) {
+    public void update(AccountDetail accountDetail, Long noticeId, Visibility visibility, String title,
+                       String content) {
+
         Post post = postReader.findById(noticeId);
 
         if (postPermissionValidator.isOwner(post, accountDetail.getAccountId())) {
-            postSupplier.update(post, title, content);
+            post.update(visibility, title, content);
             return;
         }
 
@@ -59,7 +74,7 @@ public class PostService {
         Post post = postReader.findById(noticeId);
 
         if (postPermissionValidator.hasPermission(post, accountDetail.getAccountId())) {
-            postSupplier.delete(post);
+            postManager.delete(post);
             return;
         }
 

@@ -1,5 +1,6 @@
 package backend.zelkova.post.dto.request;
 
+import backend.zelkova.post.model.Visibility;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,9 @@ public class PostUpdateRequest {
 
     @NotNull
     private Long noticeId;
+
+    @NotNull
+    private Visibility visibility;
 
     @NotEmpty
     @Max(value = 255)

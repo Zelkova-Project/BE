@@ -44,7 +44,9 @@ public class PostController {
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
                                       @RequestBody @Valid PostRequest postRequest) {
 
-        Long noticeId = postService.write(accountDetail, postRequest.getTitle(), postRequest.getContent());
+        Long noticeId = postService.write(accountDetail, postRequest.getCategory(), postRequest.getVisibility(),
+                postRequest.getTitle(), postRequest.getContent());
+
         return ResponseEntity.created(URI.create("/notices/" + noticeId))
                 .build();
     }
@@ -53,8 +55,8 @@ public class PostController {
     public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
-        postService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getTitle(),
-                postUpdateRequest.getContent());
+        postService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getVisibility(),
+                postUpdateRequest.getTitle(), postUpdateRequest.getContent());
 
         return ResponseEntity.noContent()
                 .build();

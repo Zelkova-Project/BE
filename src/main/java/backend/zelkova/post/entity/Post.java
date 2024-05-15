@@ -56,13 +56,16 @@ public class Post extends BaseEntity {
     @NotBlank
     private String content;
 
-    public Post(Account account, String title, String content) {
+    public Post(Account account, Category category, Visibility visibility, String title, String content) {
         this.account = account;
+        this.category = category;
+        this.visibility = visibility;
         this.title = title;
         this.content = content;
     }
 
-    public void update(String title, String content) {
+    public void update(Visibility visibility, String title, String content) {
+        this.visibility = visibility;
         this.title = title;
         this.content = content;
     }
