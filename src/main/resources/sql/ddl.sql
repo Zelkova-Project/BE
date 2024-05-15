@@ -17,23 +17,6 @@ CREATE TABLE `accounts`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `notices`
-(
-    `notice_id`  BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `account_id` BIGINT       NOT NULL,
-    `title`      VARCHAR(255) NOT NULL,
-    `content`    TEXT         NOT NULL,
-    `created_at` DATETIME     NOT NULL,
-    `updated_at` DATETIME     NOT NULL,
-    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE,
-    INDEX `idx_account_id` (`account_id`),
-    FULLTEXT INDEX idx_ft_title (`title`) WITH PARSER `ngram`,
-    FULLTEXT INDEX idx_ft_content (`content`) WITH PARSER `ngram`,
-    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
 CREATE TABLE `roles`
 (
     `role_code` VARCHAR(20) NOT NULL PRIMARY KEY
@@ -93,19 +76,37 @@ CREATE TABLE `chats`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+CREATE TABLE `categories`
+(
+    `category_code` VARCHAR(30) NOT NULL PRIMARY KEY
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `visibilities`
+(
+    `visibility_code` VARCHAR(20) NOT NULL PRIMARY KEY
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
 CREATE TABLE `posts`
 (
-    `post_id`    BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `account_id` BIGINT       NOT NULL,
-    `title`      VARCHAR(255) NOT NULL,
-    `content`    TEXT         NOT NULL,
-    `created_at` DATETIME     NOT NULL,
-    `updated_at` DATETIME     NOT NULL,
-    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE,
+    `post_id`         BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `account_id`      BIGINT       NOT NULL,
+    `category_code`   VARCHAR(30)  NOT NULL,
+    `visibility_code` VARCHAR(20)  NOT NULL,
+    `title`           VARCHAR(255) NOT NULL,
+    `content`         TEXT         NOT NULL,
+    `created_at`      DATETIME     NOT NULL,
+    `updated_at`      DATETIME     NOT NULL,
+    `deleted`         BOOLEAN      NOT NULL DEFAULT FALSE,
     INDEX `idx_account_id` (`account_id`),
     FULLTEXT INDEX idx_ft_title (`title`) WITH PARSER `ngram`,
     FULLTEXT INDEX idx_ft_content (`content`) WITH PARSER `ngram`,
-    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`)
+    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
+    FOREIGN KEY (`category_code`) REFERENCES `categories` (`category_code`),
+    FOREIGN KEY (`visibility_code`) REFERENCES `visibilities` (`visibility_code`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -132,18 +133,6 @@ CREATE TABLE `post_images`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `notice_images`
-(
-    `notice_id`  BIGINT     NOT NULL,
-    `saved_name` BINARY(16) NOT NULL,
-    PRIMARY KEY (`notice_id`, `saved_name`),
-    INDEX `idx_saved_name` (`saved_name`),
-    FOREIGN KEY (`notice_id`) REFERENCES `notices` (`notice_id`),
-    FOREIGN KEY (`saved_name`) REFERENCES `image` (`saved_name`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
 CREATE TABLE `comments`
 (
     `comment_id` BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -164,3 +153,13 @@ CREATE TABLE `comments`
 INSERT INTO roles
 VALUES ('ADMIN'),
        ('MANAGER');
+
+INSERT INTO categories
+VALUES ('HOME_COMMUNICATION'),
+       ('RECRUIT'),
+       ('NOTICE'),
+       ('BOARD');
+
+INSERT INTO visibilities
+VALUES ('PUBLIC'),
+       ('PRIVATE');
