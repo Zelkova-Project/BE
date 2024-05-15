@@ -32,4 +32,15 @@ public class NoticeSupplier {
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
+
+    public void delete(Notice notice, Long accountId) {
+        Account noticeOwner = notice.getAccount();
+
+        if (noticeOwner.getId().equals(accountId)) {
+            noticeRepository.delete(notice);
+            return;
+        }
+
+        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+    }
 }
