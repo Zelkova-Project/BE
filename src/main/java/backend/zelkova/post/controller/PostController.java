@@ -2,6 +2,7 @@ package backend.zelkova.post.controller;
 
 import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.post.dto.request.PostDeleteRequest;
+import backend.zelkova.post.dto.request.PostMoveRequest;
 import backend.zelkova.post.dto.request.PostRequest;
 import backend.zelkova.post.dto.request.PostUpdateRequest;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
@@ -57,6 +58,16 @@ public class PostController {
 
         postService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getVisibility(),
                 postUpdateRequest.getTitle(), postUpdateRequest.getContent());
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @PatchMapping("/move")
+    public ResponseEntity<Void> move(@AuthenticationPrincipal AccountDetail accountDetail,
+                                     @RequestBody @Valid PostMoveRequest postMoveRequest) {
+
+        postService.move(accountDetail, postMoveRequest.getPostId(), postMoveRequest.getCategory());
 
         return ResponseEntity.noContent()
                 .build();
