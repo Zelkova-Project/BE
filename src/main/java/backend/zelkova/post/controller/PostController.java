@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +41,6 @@ public class PostController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
                                       @RequestBody @Valid PostRequest postRequest) {
 
@@ -52,7 +50,6 @@ public class PostController {
     }
 
     @PatchMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
@@ -64,7 +61,6 @@ public class PostController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostDeleteRequest postDeleteRequest) {
 
