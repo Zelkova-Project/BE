@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,15 +24,19 @@ public class Account extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String loginId;
 
+    @NotBlank
     @Column(columnDefinition = "CHAR(60)")
     private String password;
 
+    @NotBlank
     private String name;
 
     private String nickname;
 
+    @NotBlank
     @Column(columnDefinition = "VARCHAR(255)")
     private String email;
 

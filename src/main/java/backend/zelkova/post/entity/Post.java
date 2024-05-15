@@ -15,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,21 +34,26 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "category_code", columnDefinition = "VARCHAR(30)")
     Category category;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility_code", columnDefinition = "VARCHAR(20)")
     Visibility visibility;
 
+    @NotBlank
     @Column(columnDefinition = "VARCHAR(255)")
     private String title;
 
+    @NotBlank
     private String content;
 
     public Post(Account account, String title, String content) {
