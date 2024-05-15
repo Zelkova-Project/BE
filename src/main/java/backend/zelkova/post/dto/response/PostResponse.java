@@ -4,12 +4,14 @@ import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public record PostResponse(Long no, String title, String content, LocalDateTime dateTime,
-                           PostPreviewResponse prev, PostPreviewResponse next) {
+public record PostResponse(Long accountId, String accountName, Long no, String title, String content,
+                           LocalDateTime dateTime, PostPreviewResponse prev, PostPreviewResponse next) {
 
     @QueryProjection
-    public PostResponse(Long no, String title, String content, LocalDateTime dateTime, PostPreviewResponse prev,
-                        PostPreviewResponse next) {
+    public PostResponse(Long accountId, String accountName, Long no, String title, String content,
+                        LocalDateTime dateTime, PostPreviewResponse prev, PostPreviewResponse next) {
+        this.accountId = accountId;
+        this.accountName = accountName;
         this.no = no;
         this.title = title;
         this.content = content;

@@ -1,5 +1,6 @@
 package backend.zelkova.post.repository;
 
+import static backend.zelkova.account.entity.QAccount.account;
 import static backend.zelkova.post.entity.QPost.post;
 
 import backend.zelkova.post.dto.response.PostPreviewResponse;
@@ -51,6 +52,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         return jpaQueryFactory
                 .select(new QPostResponse(
+                        account.id,
+                        account.name,
                         post.id,
                         post.title,
                         post.content,
@@ -70,6 +73,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 ))
 
                 .from(post)
+
+                .innerJoin(account)
+                .on(post.account.eq(account))
 
                 .leftJoin(prev)
                 .on(prev.id.eq(
