@@ -2,8 +2,12 @@ package backend.zelkova.post.entity;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.base.BaseEntity;
+import backend.zelkova.post.model.Category;
+import backend.zelkova.post.model.Visibility;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +35,14 @@ public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category_code", columnDefinition = "VARCHAR(30)")
+    Category category;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "visibility_code", columnDefinition = "VARCHAR(20)")
+    Visibility visibility;
 
     @Column(columnDefinition = "VARCHAR(255)")
     private String title;
