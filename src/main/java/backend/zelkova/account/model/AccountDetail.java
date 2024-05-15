@@ -1,5 +1,6 @@
 package backend.zelkova.account.model;
 
+import backend.zelkova.account.entity.Role;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -20,6 +21,10 @@ public class AccountDetail implements UserDetails {
         this.loginId = loginId;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    public boolean hasAuthority(Role role) {
+        return authorities.contains(role);
     }
 
     @Override
