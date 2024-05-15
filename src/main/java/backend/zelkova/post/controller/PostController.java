@@ -6,7 +6,7 @@ import backend.zelkova.post.dto.request.PostRequest;
 import backend.zelkova.post.dto.request.PostUpdateRequest;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
-import backend.zelkova.post.service.NoticeService;
+import backend.zelkova.post.service.PostService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +26,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notices")
+@RequestMapping("/posts")
 public class PostController {
 
-    private final NoticeService noticeService;
+    private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<Page<PostPreviewResponse>> getAllNotices(Pageable pageable) {
-        return ResponseEntity.ok(noticeService.getNoticePreviews(pageable));
+    public ResponseEntity<Page<PostPreviewResponse>> getPostPreviews(Pageable pageable) {
+        return ResponseEntity.ok(postService.getPostPreviews(pageable));
     }
 
     @GetMapping("/{noticeId}")
-    public ResponseEntity<PostResponse> getNotice(@PathVariable Long noticeId) {
-        return ResponseEntity.ok(noticeService.getNotice(noticeId));
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long noticeId) {
+        return ResponseEntity.ok(postService.getPost(noticeId));
     }
 
     @PostMapping
@@ -46,7 +46,7 @@ public class PostController {
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
                                       @RequestBody @Valid PostRequest postRequest) {
 
-        Long noticeId = noticeService.write(accountDetail, postRequest.getTitle(), postRequest.getContent());
+        Long noticeId = postService.write(accountDetail, postRequest.getTitle(), postRequest.getContent());
         return ResponseEntity.created(URI.create("/notices/" + noticeId))
                 .build();
     }
@@ -56,7 +56,7 @@ public class PostController {
     public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
-        noticeService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getTitle(),
+        postService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getTitle(),
                 postUpdateRequest.getContent());
 
         return ResponseEntity.noContent()
@@ -68,7 +68,7 @@ public class PostController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostDeleteRequest postDeleteRequest) {
 
-        noticeService.delete(accountDetail, postDeleteRequest.getNoticeId());
+        postService.delete(accountDetail, postDeleteRequest.getNoticeId());
 
         return ResponseEntity.noContent()
                 .build();

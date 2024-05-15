@@ -20,7 +20,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<PostPreviewResponse> retrieveAllNoticesResponses(Pageable pageable) {
+    public Page<PostPreviewResponse> retrieveAllPostPreviewResponses(Pageable pageable) {
         List<PostPreviewResponse> content = jpaQueryFactory
                 .select(new QPostPreviewResponse(
                         post.id,
@@ -44,7 +44,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    public PostResponse retrieveNoticeResponse(Long postId) {
+    public PostResponse retrievePostResponse(Long postId) {
 
         QPost prev = new QPost("prev");
         QPost next = new QPost("next");

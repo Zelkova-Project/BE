@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface PostRepositoryCustom {
 
-    Page<PostPreviewResponse> retrieveAllNoticesResponses(Pageable pageable);
+    Page<PostPreviewResponse> retrieveAllPostPreviewResponses(Pageable pageable);
 
-    PostResponse retrieveNoticeResponse(Long noticeId);
+    PostResponse retrievePostResponse(Long noticeId);
 }

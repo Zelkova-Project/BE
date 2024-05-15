@@ -18,11 +18,11 @@ public class PostReader {
     private final PostRepository postRepository;
 
     public Page<PostPreviewResponse> findAll(Pageable pageable) {
-        return postRepository.retrieveAllNoticesResponses(pageable);
+        return postRepository.retrieveAllPostPreviewResponses(pageable);
     }
 
-    public PostResponse findNoticeResponseByNoticeId(Long noticeId) {
-        return postRepository.retrieveNoticeResponse(noticeId);
+    public PostResponse findPostResponseByPostId(Long noticeId) {
+        return postRepository.retrievePostResponse(noticeId);
     }
 
     public Post findById(Long noticeId) {

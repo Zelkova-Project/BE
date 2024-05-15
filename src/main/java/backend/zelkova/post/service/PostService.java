@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class NoticeService {
+public class PostService {
 
     private final AccountReader accountReader;
     private final PostSupplier postSupplier;
@@ -33,12 +33,12 @@ public class NoticeService {
         return post.getId();
     }
 
-    public Page<PostPreviewResponse> getNoticePreviews(Pageable pageable) {
+    public Page<PostPreviewResponse> getPostPreviews(Pageable pageable) {
         return postReader.findAll(pageable);
     }
 
-    public PostResponse getNotice(Long noticeId) {
-        return postReader.findNoticeResponseByNoticeId(noticeId);
+    public PostResponse getPost(Long noticeId) {
+        return postReader.findPostResponseByPostId(noticeId);
     }
 
     @Transactional
