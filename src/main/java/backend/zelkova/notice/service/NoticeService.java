@@ -1,8 +1,11 @@
 package backend.zelkova.notice.service;
 
 import backend.zelkova.account.entity.Account;
+import backend.zelkova.account.entity.Role;
 import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.operator.AccountReader;
+import backend.zelkova.exception.CustomException;
+import backend.zelkova.exception.ExceptionStatus;
 import backend.zelkova.notice.dto.response.NoticePreviewResponse;
 import backend.zelkova.notice.dto.response.NoticeResponse;
 import backend.zelkova.notice.entity.Notice;
@@ -41,12 +44,37 @@ public class NoticeService {
     @Transactional
     public void update(AccountDetail accountDetail, Long noticeId, String title, String content) {
         Notice notice = noticeReader.findById(noticeId);
-        noticeSupplier.update(notice, accountDetail.getAccountId(), title, content);
+
+        if (isOwner(notice, accountDetail.getAccountId())) {
+            noticeSupplier.update(notice, title, content);
+            return;
+        }
+
+        throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
 
     @Transactional
     public void delete(AccountDetail accountDetail, Long noticeId) {
         Notice notice = noticeReader.findById(noticeId);
-        noticeSupplier.delete(notice, accountDetail.getAccountId());
+
+        if (hasPermission(notice, accountDetail) {
+           noticeSupplier.delete(notice);
+            return;
+        }
+
+        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+    }
+
+    private boolean hasPermission(Notice notice, AccountDetail accountDetail) {
+        return isOwner(notice, accountDetail.getAccountId()) || hasRole(accountDetail)
+    }
+
+    private boolean isOwner(Notice notice, Long accountId) {
+        Account account = notice.getAccount();
+        return account.getId().equals(accountId);
+    }
+
+    private boolean hasRole(AccountDetail accountDetail) {
+        return accountDetail.hasAuthority(Role.ADMIN) || accountDetail.hasAuthority(Role.MANAGER);
     }
 }

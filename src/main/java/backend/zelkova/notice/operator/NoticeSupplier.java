@@ -1,8 +1,6 @@
 package backend.zelkova.notice.operator;
 
 import backend.zelkova.account.entity.Account;
-import backend.zelkova.exception.CustomException;
-import backend.zelkova.exception.ExceptionStatus;
 import backend.zelkova.notice.entity.Notice;
 import backend.zelkova.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,25 +20,11 @@ public class NoticeSupplier {
         return noticeRepository.save(notice);
     }
 
-    public void update(Notice notice, Long accountId, String title, String content) {
-        Account noticeOwner = notice.getAccount();
-
-        if (noticeOwner.getId().equals(accountId)) {
-            notice.update(title, content);
-            return;
-        }
-
-        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+    public void update(Notice notice, String title, String content) {
+        notice.update(title, content);
     }
 
-    public void delete(Notice notice, Long accountId) {
-        Account noticeOwner = notice.getAccount();
-
-        if (noticeOwner.getId().equals(accountId)) {
-            noticeRepository.delete(notice);
-            return;
-        }
-
-        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+    public void delete(Notice notice) {
+        noticeRepository.delete(notice);
     }
 }
