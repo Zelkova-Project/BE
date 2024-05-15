@@ -1,4 +1,4 @@
-package backend.zelkova.notice.entity;
+package backend.zelkova.post.entity;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.base.BaseEntity;
@@ -21,7 +21,7 @@ import org.hibernate.annotations.SoftDelete;
 @SoftDelete
 @Table(name = "notices")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice extends BaseEntity {
+public class Post extends BaseEntity {
 
     @Id
     @Column(name = "notice_id")
@@ -37,7 +37,7 @@ public class Notice extends BaseEntity {
 
     private String content;
 
-    public Notice(Account account, String title, String content) {
+    public Post(Account account, String title, String content) {
         this.account = account;
         this.title = title;
         this.content = content;

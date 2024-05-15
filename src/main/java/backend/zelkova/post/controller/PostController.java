@@ -1,12 +1,12 @@
-package backend.zelkova.notice.controller;
+package backend.zelkova.post.controller;
 
 import backend.zelkova.account.model.AccountDetail;
-import backend.zelkova.notice.dto.request.NoticeDeleteRequest;
-import backend.zelkova.notice.dto.request.NoticeRequest;
-import backend.zelkova.notice.dto.request.NoticeUpdateRequest;
-import backend.zelkova.notice.dto.response.NoticePreviewResponse;
-import backend.zelkova.notice.dto.response.NoticeResponse;
-import backend.zelkova.notice.service.NoticeService;
+import backend.zelkova.post.dto.request.PostDeleteRequest;
+import backend.zelkova.post.dto.request.PostRequest;
+import backend.zelkova.post.dto.request.PostUpdateRequest;
+import backend.zelkova.post.dto.response.PostPreviewResponse;
+import backend.zelkova.post.dto.response.PostResponse;
+import backend.zelkova.post.service.NoticeService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -27,26 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/notices")
-public class NoticeController {
+public class PostController {
 
     private final NoticeService noticeService;
 
     @GetMapping
-    public ResponseEntity<Page<NoticePreviewResponse>> getAllNotices(Pageable pageable) {
+    public ResponseEntity<Page<PostPreviewResponse>> getAllNotices(Pageable pageable) {
         return ResponseEntity.ok(noticeService.getNoticePreviews(pageable));
     }
 
     @GetMapping("/{noticeId}")
-    public ResponseEntity<NoticeResponse> getNotice(@PathVariable Long noticeId) {
+    public ResponseEntity<PostResponse> getNotice(@PathVariable Long noticeId) {
         return ResponseEntity.ok(noticeService.getNotice(noticeId));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
-                                      @RequestBody @Valid NoticeRequest noticeRequest) {
+                                      @RequestBody @Valid PostRequest postRequest) {
 
-        Long noticeId = noticeService.write(accountDetail, noticeRequest.getTitle(), noticeRequest.getContent());
+        Long noticeId = noticeService.write(accountDetail, postRequest.getTitle(), postRequest.getContent());
         return ResponseEntity.created(URI.create("/notices/" + noticeId))
                 .build();
     }
@@ -54,10 +54,10 @@ public class NoticeController {
     @PatchMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
-                                       @RequestBody @Valid NoticeUpdateRequest noticeUpdateRequest) {
+                                       @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
-        noticeService.update(accountDetail, noticeUpdateRequest.getNoticeId(), noticeUpdateRequest.getTitle(),
-                noticeUpdateRequest.getContent());
+        noticeService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getTitle(),
+                postUpdateRequest.getContent());
 
         return ResponseEntity.noContent()
                 .build();
@@ -66,9 +66,9 @@ public class NoticeController {
     @DeleteMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
-                                       @RequestBody @Valid NoticeDeleteRequest noticeDeleteRequest) {
+                                       @RequestBody @Valid PostDeleteRequest postDeleteRequest) {
 
-        noticeService.delete(accountDetail, noticeDeleteRequest.getNoticeId());
+        noticeService.delete(accountDetail, postDeleteRequest.getNoticeId());
 
         return ResponseEntity.noContent()
                 .build();

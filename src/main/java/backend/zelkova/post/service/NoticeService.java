@@ -1,4 +1,4 @@
-package backend.zelkova.notice.service;
+package backend.zelkova.post.service;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.entity.Role;
@@ -6,11 +6,11 @@ import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.operator.AccountReader;
 import backend.zelkova.exception.CustomException;
 import backend.zelkova.exception.ExceptionStatus;
-import backend.zelkova.notice.dto.response.NoticePreviewResponse;
-import backend.zelkova.notice.dto.response.NoticeResponse;
-import backend.zelkova.notice.entity.Notice;
-import backend.zelkova.notice.operator.NoticeReader;
-import backend.zelkova.notice.operator.NoticeSupplier;
+import backend.zelkova.post.dto.response.PostPreviewResponse;
+import backend.zelkova.post.dto.response.PostResponse;
+import backend.zelkova.post.entity.Post;
+import backend.zelkova.post.operator.PostReader;
+import backend.zelkova.post.operator.PostSupplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,30 +23,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
 
     private final AccountReader accountReader;
-    private final NoticeSupplier noticeSupplier;
-    private final NoticeReader noticeReader;
+    private final PostSupplier postSupplier;
+    private final PostReader postReader;
 
     @Transactional
     public Long write(AccountDetail accountDetail, String title, String content) {
         Account account = accountReader.findAccountById(accountDetail.getAccountId());
-        Notice notice = noticeSupplier.supply(account, title, content);
-        return notice.getId();
+        Post post = postSupplier.supply(account, title, content);
+        return post.getId();
     }
 
-    public Page<NoticePreviewResponse> getNoticePreviews(Pageable pageable) {
-        return noticeReader.findAll(pageable);
+    public Page<PostPreviewResponse> getNoticePreviews(Pageable pageable) {
+        return postReader.findAll(pageable);
     }
 
-    public NoticeResponse getNotice(Long noticeId) {
-        return noticeReader.findNoticeResponseByNoticeId(noticeId);
+    public PostResponse getNotice(Long noticeId) {
+        return postReader.findNoticeResponseByNoticeId(noticeId);
     }
 
     @Transactional
     public void update(AccountDetail accountDetail, Long noticeId, String title, String content) {
-        Notice notice = noticeReader.findById(noticeId);
+        Post post = postReader.findById(noticeId);
 
-        if (isOwner(notice, accountDetail.getAccountId())) {
-            noticeSupplier.update(notice, title, content);
+        if (isOwner(post, accountDetail.getAccountId())) {
+            postSupplier.update(post, title, content);
             return;
         }
 
@@ -55,22 +55,22 @@ public class NoticeService {
 
     @Transactional
     public void delete(AccountDetail accountDetail, Long noticeId) {
-        Notice notice = noticeReader.findById(noticeId);
+        Post post = postReader.findById(noticeId);
 
-        if (hasPermission(notice, accountDetail)) {
-            noticeSupplier.delete(notice);
+        if (hasPermission(post, accountDetail)) {
+            postSupplier.delete(post);
             return;
         }
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
 
-    private boolean hasPermission(Notice notice, AccountDetail accountDetail) {
-        return isOwner(notice, accountDetail.getAccountId()) || hasRole(accountDetail);
+    private boolean hasPermission(Post post, AccountDetail accountDetail) {
+        return isOwner(post, accountDetail.getAccountId()) || hasRole(accountDetail);
     }
 
-    private boolean isOwner(Notice notice, Long accountId) {
-        Account account = notice.getAccount();
+    private boolean isOwner(Post post, Long accountId) {
+        Account account = post.getAccount();
         return account.getId().equals(accountId);
     }
 

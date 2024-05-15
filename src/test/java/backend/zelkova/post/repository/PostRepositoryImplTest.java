@@ -1,11 +1,11 @@
-package backend.zelkova.notice.repository;
+package backend.zelkova.post.repository;
 
 import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
-import backend.zelkova.notice.dto.response.NoticePreviewResponse;
-import backend.zelkova.notice.dto.response.NoticeResponse;
-import backend.zelkova.notice.entity.Notice;
+import backend.zelkova.post.dto.response.PostPreviewResponse;
+import backend.zelkova.post.dto.response.PostResponse;
+import backend.zelkova.post.entity.Post;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,33 +15,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-class NoticeRepositoryImplTest extends IntegrationTestSupport {
+class PostRepositoryImplTest extends IntegrationTestSupport {
 
     @Autowired
-    NoticeRepository noticeRepository;
+    PostRepository postRepository;
 
     @Autowired
     AccountRepository accountRepository;
 
     Account account;
 
-    Notice firstNotice;
-    Notice middleNotice;
-    Notice lastNotice;
+    Post firstPost;
+    Post middlePost;
+    Post lastPost;
 
     @BeforeEach
     void setUp() {
         account = accountRepository.save(new Account("loginId", "password", "name", "nickname", "email"));
-        firstNotice = noticeRepository.save(new Notice(account, "첫번째", "내용"));
-        noticeRepository.save(new Notice(account, "두번째", "내용"));
-        middleNotice = noticeRepository.save(new Notice(account, "세번째", "내용"));
-        noticeRepository.save(new Notice(account, "네번째", "내용"));
-        lastNotice = noticeRepository.save(new Notice(account, "다섯번째", "내용"));
+        firstPost = postRepository.save(new Post(account, "첫번째", "내용"));
+        postRepository.save(new Post(account, "두번째", "내용"));
+        middlePost = postRepository.save(new Post(account, "세번째", "내용"));
+        postRepository.save(new Post(account, "네번째", "내용"));
+        lastPost = postRepository.save(new Post(account, "다섯번째", "내용"));
     }
 
     @AfterEach
     void tearDown() {
-        noticeRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
         accountRepository.deleteAllInBatch();
     }
 
@@ -52,16 +52,16 @@ class NoticeRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        NoticeResponse noticeResponse = noticeRepository.retrieveNoticeResponse(middleNotice.getId());
+        PostResponse postResponse = postRepository.retrieveNoticeResponse(middlePost.getId());
 
         // then
-        Assertions.assertThat(noticeResponse).extracting(NoticeResponse::title, NoticeResponse::content)
+        Assertions.assertThat(postResponse).extracting(PostResponse::title, PostResponse::content)
                 .containsExactly("세번째", "내용");
 
-        Assertions.assertThat(noticeResponse.prev().title())
+        Assertions.assertThat(postResponse.prev().title())
                 .isEqualTo("두번째");
 
-        Assertions.assertThat(noticeResponse.next().title())
+        Assertions.assertThat(postResponse.next().title())
                 .isEqualTo("네번째");
     }
 
@@ -72,16 +72,16 @@ class NoticeRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        NoticeResponse noticeResponse = noticeRepository.retrieveNoticeResponse(firstNotice.getId());
+        PostResponse postResponse = postRepository.retrieveNoticeResponse(firstPost.getId());
 
         // then
-        Assertions.assertThat(noticeResponse).extracting(NoticeResponse::title, NoticeResponse::content)
+        Assertions.assertThat(postResponse).extracting(PostResponse::title, PostResponse::content)
                 .containsExactly("첫번째", "내용");
 
-        Assertions.assertThat(noticeResponse.prev())
+        Assertions.assertThat(postResponse.prev())
                 .isNull();
 
-        Assertions.assertThat(noticeResponse.next().title())
+        Assertions.assertThat(postResponse.next().title())
                 .isEqualTo("두번째");
     }
 
@@ -92,16 +92,16 @@ class NoticeRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        NoticeResponse noticeResponse = noticeRepository.retrieveNoticeResponse(lastNotice.getId());
+        PostResponse postResponse = postRepository.retrieveNoticeResponse(lastPost.getId());
 
         // then
-        Assertions.assertThat(noticeResponse).extracting(NoticeResponse::title, NoticeResponse::content)
+        Assertions.assertThat(postResponse).extracting(PostResponse::title, PostResponse::content)
                 .containsExactly("다섯번째", "내용");
 
-        Assertions.assertThat(noticeResponse.prev().title())
+        Assertions.assertThat(postResponse.prev().title())
                 .isEqualTo("네번째");
 
-        Assertions.assertThat(noticeResponse.next())
+        Assertions.assertThat(postResponse.next())
                 .isNull();
     }
 
@@ -112,7 +112,7 @@ class NoticeRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        Page<NoticePreviewResponse> noticePreviewResponses = noticeRepository.retrieveAllNoticesResponses(
+        Page<PostPreviewResponse> noticePreviewResponses = postRepository.retrieveAllNoticesResponses(
                 Pageable.ofSize(3));
 
         // then
