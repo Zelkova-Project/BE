@@ -43,4 +43,10 @@ public class NoticeService {
         Notice notice = noticeReader.findById(noticeId);
         noticeSupplier.update(notice, accountDetail.getAccountId(), title, content);
     }
+
+    @Transactional
+    public void delete(AccountDetail accountDetail, Long noticeId) {
+        Notice notice = noticeReader.findById(noticeId);
+        noticeSupplier.delete(notice, accountDetail.getAccountId());
+    }
 }
