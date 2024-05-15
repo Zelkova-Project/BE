@@ -1,6 +1,7 @@
 package backend.zelkova.notice.controller;
 
 import backend.zelkova.account.model.AccountDetail;
+import backend.zelkova.notice.dto.request.NoticeDeleteRequest;
 import backend.zelkova.notice.dto.request.NoticeRequest;
 import backend.zelkova.notice.dto.request.NoticeUpdateRequest;
 import backend.zelkova.notice.dto.response.NoticePreviewResponse;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,6 +58,17 @@ public class NoticeController {
 
         noticeService.update(accountDetail, noticeUpdateRequest.getNoticeId(), noticeUpdateRequest.getTitle(),
                 noticeUpdateRequest.getContent());
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
+                                       @RequestBody @Valid NoticeDeleteRequest noticeDeleteRequest) {
+
+        noticeService.delete(accountDetail, noticeDeleteRequest.getNoticeId());
 
         return ResponseEntity.noContent()
                 .build();
