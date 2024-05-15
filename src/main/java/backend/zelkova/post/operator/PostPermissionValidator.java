@@ -5,6 +5,7 @@ import backend.zelkova.account.entity.AccountRole;
 import backend.zelkova.account.entity.Role;
 import backend.zelkova.account.repository.AccountRoleRepository;
 import backend.zelkova.post.entity.Post;
+import backend.zelkova.post.model.Category;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,15 @@ public class PostPermissionValidator {
 
     public boolean hasPermission(Post post, Long accountId) {
         return isOwner(post, accountId) || hasRole(accountId);
+    }
+
+    public boolean hasPermission(Category category, Long accountId) {
+
+        if (category.isRequiredRole()) {
+            return hasRole(accountId);
+        }
+
+        return true;
     }
 
     public boolean isOwner(Post post, Long accountId) {
