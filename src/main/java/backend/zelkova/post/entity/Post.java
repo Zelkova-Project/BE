@@ -19,12 +19,12 @@ import org.hibernate.annotations.SoftDelete;
 @Entity
 @Getter
 @SoftDelete
-@Table(name = "notices")
+@Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
     @Id
-    @Column(name = "notice_id")
+    @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
