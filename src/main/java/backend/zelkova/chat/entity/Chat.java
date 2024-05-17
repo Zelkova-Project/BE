@@ -34,4 +34,10 @@ public class Chat extends BaseEntity {
     private Account account;
 
     private String content;
+
+    public Chat(Chatroom chatroom, Account account, String content) {
+        this.chatroom = chatroom;
+        this.account = account;
+        this.content = content;
+    }
 }
