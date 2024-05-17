@@ -3,9 +3,12 @@ package backend.zelkova.post.repository;
 import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
+import backend.zelkova.helper.HardDeleteSupplier;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
+import backend.zelkova.post.model.Category;
+import backend.zelkova.post.model.Visibility;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,26 +26,33 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    HardDeleteSupplier hardDeleteSupplier;
+
     Account account;
 
     Post firstPost;
     Post middlePost;
     Post lastPost;
 
+    @AfterEach
+    void tearDown() {
+        hardDeleteSupplier.hardDelete(Post.class, Account.class);
+    }
+
     @BeforeEach
     void setUp() {
         account = accountRepository.save(new Account("loginId", "password", "name", "nickname", "email"));
-        firstPost = postRepository.save(new Post(account, "첫번째", "내용"));
-        postRepository.save(new Post(account, "두번째", "내용"));
-        middlePost = postRepository.save(new Post(account, "세번째", "내용"));
-        postRepository.save(new Post(account, "네번째", "내용"));
-        lastPost = postRepository.save(new Post(account, "다섯번째", "내용"));
+
+        firstPost = postRepository.save(createPost(account, "첫번째"));
+        postRepository.save(createPost(account, "두번째"));
+        middlePost = postRepository.save(createPost(account, "세번째"));
+        postRepository.save(createPost(account, "네번째"));
+        lastPost = postRepository.save(createPost(account, "다섯번째"));
     }
 
-    @AfterEach
-    void tearDown() {
-        postRepository.deleteAllInBatch();
-        accountRepository.deleteAllInBatch();
+    private Post createPost(Account account, String title) {
+        return new Post(account, Category.BOARD, Visibility.PUBLIC, title, "content");
     }
 
     @Test
@@ -52,11 +62,11 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        PostResponse postResponse = postRepository.retrieveNoticeResponse(middlePost.getId());
+        PostResponse postResponse = postRepository.retrievePostResponse(middlePost.getId());
 
         // then
-        Assertions.assertThat(postResponse).extracting(PostResponse::title, PostResponse::content)
-                .containsExactly("세번째", "내용");
+        Assertions.assertThat(postResponse.title())
+                .isEqualTo("세번째");
 
         Assertions.assertThat(postResponse.prev().title())
                 .isEqualTo("두번째");
@@ -72,11 +82,11 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        PostResponse postResponse = postRepository.retrieveNoticeResponse(firstPost.getId());
+        PostResponse postResponse = postRepository.retrievePostResponse(firstPost.getId());
 
         // then
-        Assertions.assertThat(postResponse).extracting(PostResponse::title, PostResponse::content)
-                .containsExactly("첫번째", "내용");
+        Assertions.assertThat(postResponse.title())
+                .isEqualTo("첫번째");
 
         Assertions.assertThat(postResponse.prev())
                 .isNull();
@@ -92,11 +102,11 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        PostResponse postResponse = postRepository.retrieveNoticeResponse(lastPost.getId());
+        PostResponse postResponse = postRepository.retrievePostResponse(lastPost.getId());
 
         // then
-        Assertions.assertThat(postResponse).extracting(PostResponse::title, PostResponse::content)
-                .containsExactly("다섯번째", "내용");
+        Assertions.assertThat(postResponse.title())
+                .isEqualTo("다섯번째");
 
         Assertions.assertThat(postResponse.prev().title())
                 .isEqualTo("네번째");
@@ -112,7 +122,7 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        Page<PostPreviewResponse> noticePreviewResponses = postRepository.retrieveAllNoticesResponses(
+        Page<PostPreviewResponse> noticePreviewResponses = postRepository.retrieveAllPostPreviewResponses(
                 Pageable.ofSize(3));
 
         // then
