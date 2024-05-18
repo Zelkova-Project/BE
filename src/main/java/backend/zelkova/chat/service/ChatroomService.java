@@ -40,7 +40,7 @@ public class ChatroomService {
             return;
         }
 
-        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+        throw new CustomException(ExceptionStatus.NOT_PARTICIPANT_ACCOUNT);
     }
 
     private boolean isParticipant(Set<Account> accountsInChatroom, Long accountId) {

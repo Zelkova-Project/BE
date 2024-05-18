@@ -21,6 +21,10 @@ public class AccountReader {
                 .orElseThrow(() -> new CustomException(ExceptionStatus.NOTFOUND));
     }
 
+    public Account getReferenceById(Long accountId) {
+        return accountRepository.getReferenceById(accountId);
+    }
+
     public Account findAccountByLoginId(String loginId) {
         return accountRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException(loginId + "을 찾을 수 없음"));

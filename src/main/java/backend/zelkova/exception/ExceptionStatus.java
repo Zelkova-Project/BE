@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ExceptionStatus {
+    NOT_PARTICIPANT_ACCOUNT("해당 채팅방의 참여자가 아닙니다."),
     NOTFOUND("요청하신 데이터가 존재하지 않습니다."),
     NO_PERMISSION("권한이 없습니다.", FORBIDDEN),
     LOGIN_FAILURE("로그인에 실패했습니다.");
