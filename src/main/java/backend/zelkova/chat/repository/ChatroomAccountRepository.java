@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatroomAccountRepository extends JpaRepository<ChatroomAccount, ChatroomAccountId> {
     List<ChatroomAccount> findAllById_AccountId(Long accountId);
+
+    List<ChatroomAccount> findAllById_ChatroomId(Long chatroomId);
 }
