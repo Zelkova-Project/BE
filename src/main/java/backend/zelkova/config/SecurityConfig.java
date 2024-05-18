@@ -39,6 +39,9 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers("/roles/**")
                     .hasRole("ADMIN");
 
+            authorizeRequests.requestMatchers("/ws-zelkova/**")
+                    .permitAll();
+
             authorizeRequests.anyRequest()
                     .authenticated();
         });
