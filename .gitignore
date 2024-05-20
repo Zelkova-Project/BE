@@ -593,3 +593,8 @@ Temporary Items
 .apdisk
 
 src/main/generated
+
+# Properties
+src/main/resources/*.properties
+!src/main/resources/application.properties
+!src/main/resources/application-local.properties
