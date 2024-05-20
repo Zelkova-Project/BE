@@ -593,3 +593,6 @@ Temporary Items
 .apdisk
 
 src/main/generated
+
+# static
+src/main/resources/static
