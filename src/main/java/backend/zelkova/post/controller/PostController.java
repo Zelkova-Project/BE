@@ -77,7 +77,7 @@ public class PostController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostDeleteRequest postDeleteRequest) {
 
-        postService.delete(accountDetail, postDeleteRequest.getNoticeId());
+        postService.delete(accountDetail, postDeleteRequest.getPostId());
 
         return ResponseEntity.noContent()
                 .build();
