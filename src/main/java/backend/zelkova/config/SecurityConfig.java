@@ -44,6 +44,9 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers("/roles/**")
                     .hasRole("ADMIN");
 
+            authorizeRequests.requestMatchers("/docs/**")
+                    .hasAnyRole("ADMIN", "MANAGER");
+
             authorizeRequests.anyRequest()
                     .authenticated();
         });
