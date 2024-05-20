@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class PostUpdateRequest {
 
     @NotNull
-    private Long noticeId;
+    private Long postId;
 
     @NotNull
     private Visibility visibility;
