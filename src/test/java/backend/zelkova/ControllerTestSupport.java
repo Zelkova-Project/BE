@@ -1,6 +1,7 @@
 package backend.zelkova;
 
 import backend.zelkova.account.service.AccountService;
+import backend.zelkova.post.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -26,6 +27,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected AccountService accountService;
+
+    @MockBean
+    protected PostService postService;
 
     protected <T> T getInstance(Class<T> clazz, Map<String, Object> params) throws Exception {
         Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();
