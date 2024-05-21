@@ -1,6 +1,6 @@
 package backend.zelkova.account.operator;
 
-import backend.zelkova.account.entity.Account;
+import backend.zelkova.account.entity.NormalAccount;
 import backend.zelkova.account.entity.Role;
 import backend.zelkova.account.model.AccountDetail;
 import java.util.Set;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccountDetailSupplier {
 
-    public AccountDetail supply(Account account, Set<Role> roles) {
-        return new AccountDetail(account.getId(), account.getLoginId(), account.getPassword(), roles);
+    public AccountDetail supply(NormalAccount normalAccount, Set<Role> roles) {
+        return new AccountDetail(normalAccount.getId(), normalAccount.getLoginId(), normalAccount.getPassword(), roles);
     }
 }

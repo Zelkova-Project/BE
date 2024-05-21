@@ -1,6 +1,6 @@
 package backend.zelkova.account.service;
 
-import backend.zelkova.account.entity.Account;
+import backend.zelkova.account.entity.NormalAccount;
 import backend.zelkova.account.entity.Role;
 import backend.zelkova.account.operator.AccountDetailSupplier;
 import backend.zelkova.account.operator.AccountReader;
@@ -24,8 +24,8 @@ public class AccountDetailService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        Account account = accountReader.findAccountByLoginId(loginId);
-        Set<Role> roles = accountRoleReader.findRolesByAccountId(account.getId());
-        return accountDetailSupplier.supply(account, roles);
+        NormalAccount normalAccount = accountReader.findAccountByLoginId(loginId);
+        Set<Role> roles = accountRoleReader.findRolesByAccountId(normalAccount.getId());
+        return accountDetailSupplier.supply(normalAccount, roles);
     }
 }
