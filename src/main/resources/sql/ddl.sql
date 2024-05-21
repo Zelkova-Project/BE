@@ -4,15 +4,34 @@ USE zelkova;
 CREATE TABLE `accounts`
 (
     `account_id` BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `login_id`   VARCHAR(20)  NOT NULL UNIQUE,
-    `password`   CHAR(60)     NOT NULL,
     `name`       VARCHAR(10)  NOT NULL,
     `nickname`   VARCHAR(20)  NULL,
     `email`      VARCHAR(255) NOT NULL,
     `created_at` DATETIME     NOT NULL,
     `updated_at` DATETIME     NOT NULL,
-    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE,
+    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `normal_accounts`
+(
+    `account_id` BIGINT,
+    `login_id`   VARCHAR(20) NOT NULL UNIQUE,
+    `password`   CHAR(60)    NOT NULL,
+    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
     INDEX `idx_login_id` (`login_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `kakao_accounts`
+(
+    `account_id` BIGINT,
+    `kakao_id`   VARCHAR(20) NOT NULL UNIQUE,
+    `password`   CHAR(60)    NOT NULL,
+    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
+    INDEX `idx_kakao_id` (`kakao_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
