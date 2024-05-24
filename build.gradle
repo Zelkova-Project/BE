@@ -100,10 +100,11 @@ tasks.register("copySwaggerUISample") {
 }
 
 bootJar {
+    dependsOn generateSwaggerUISample
+
     ext.profile = (!project.hasProperty('profile') || !profile) ? 'none' : profile
 
-    if ("${profile}" == 'local' || "${profile}" == 'dev') {
-        dependsOn generateSwaggerUISample
+    if ("${profile}" == 'local') {
         finalizedBy copySwaggerUISample
     }
 }
