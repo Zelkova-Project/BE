@@ -1,7 +1,15 @@
+buildscript {
+    ext {
+        restdocsApiSpecVersion = '0.19.2'
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
+    id 'org.hidetake.swagger.generator' version '2.19.2'
 }
 
 group = 'be'
@@ -39,6 +47,14 @@ dependencies {
 
     // websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // swaggerUI
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
+    testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
+    swaggerUI 'org.webjars:swagger-ui:5.15.1'
 }
 
 tasks.named('test') {
@@ -49,8 +65,46 @@ def querydslSrcDir = 'src/main/generated'
 
 clean {
     delete file(querydslSrcDir)
+    delete file("src/main/resources/static/docs/")
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.getGeneratedSourceOutputDirectory().set(file(querydslSrcDir))
+}
+
+openapi3 {
+    server = "http//localhost:8080"
+    title = "Zelkova API"
+    description = "Zelkova API description"
+    version = "0.1.0"
+    format = "json"
+}
+
+swaggerSources {
+    sample {
+        setInputFile(file("${openapi3.outputDirectory}/openapi3.json"))
+    }
+}
+
+tasks.withType(GenerateSwaggerUI).configureEach {
+    dependsOn "openapi3"
+}
+
+tasks.register("copySwaggerUISample") {
+    doLast {
+        copy {
+            from("${generateSwaggerUISample.outputDir}")
+            into("src/main/resources/static/docs/")
+        }
+    }
+}
+
+bootJar {
+    dependsOn generateSwaggerUISample
+
+    ext.profile = (!project.hasProperty('profile') || !profile) ? 'none' : profile
+
+    if ("${profile}" == 'local') {
+        finalizedBy copySwaggerUISample
+    }
 }
