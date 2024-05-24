@@ -56,7 +56,7 @@ public class PostController {
     public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
-        postService.update(accountDetail, postUpdateRequest.getNoticeId(), postUpdateRequest.getVisibility(),
+        postService.update(accountDetail, postUpdateRequest.getPostId(), postUpdateRequest.getVisibility(),
                 postUpdateRequest.getTitle(), postUpdateRequest.getContent());
 
         return ResponseEntity.noContent()
@@ -77,7 +77,7 @@ public class PostController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostDeleteRequest postDeleteRequest) {
 
-        postService.delete(accountDetail, postDeleteRequest.getNoticeId());
+        postService.delete(accountDetail, postDeleteRequest.getPostId());
 
         return ResponseEntity.noContent()
                 .build();

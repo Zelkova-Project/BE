@@ -1,5 +1,6 @@
 package backend.zelkova.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,10 @@ public class SecurityConfig {
 
         http.formLogin(AbstractHttpConfigurer::disable);
 
+        http.logout(logout ->
+                logout.logoutSuccessHandler((request, response, authentication) ->
+                        response.setStatus(HttpServletResponse.SC_OK)));
+
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.NEVER));
 
         http.authorizeHttpRequests(authorizeRequests -> {
@@ -38,6 +43,9 @@ public class SecurityConfig {
 
             authorizeRequests.requestMatchers("/roles/**")
                     .hasRole("ADMIN");
+
+            authorizeRequests.requestMatchers("/docs/**")
+                    .hasAnyRole("ADMIN", "MANAGER");
 
             authorizeRequests.anyRequest()
                     .authenticated();
