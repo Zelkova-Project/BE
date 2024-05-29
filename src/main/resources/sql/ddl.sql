@@ -25,13 +25,21 @@ CREATE TABLE `normal_accounts`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `kakao_accounts`
+CREATE TABLE `socials`
 (
-    `account_id` BIGINT,
-    `kakao_id`   VARCHAR(20) NOT NULL UNIQUE,
-    `password`   CHAR(60)    NOT NULL,
+    `social_code` VARCHAR(20) NOT NULL PRIMARY KEY
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `social_accounts`
+(
+    `account_id`  BIGINT,
+    `social_code` VARCHAR(30) NOT NULL,
+    `social_id`   VARCHAR(30) NOT NULL,
     FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
-    INDEX `idx_kakao_id` (`kakao_id`)
+    FOREIGN KEY (`social_code`) REFERENCES `socials` (`social_code`),
+    INDEX `idx_social_id` (`social_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -182,3 +190,6 @@ VALUES ('HOME_COMMUNICATION'),
 INSERT INTO visibilities
 VALUES ('PUBLIC'),
        ('PRIVATE');
+
+INSERT INTO socials
+VALUES ('KAKAO');
