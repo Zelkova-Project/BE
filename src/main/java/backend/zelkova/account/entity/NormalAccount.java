@@ -1,5 +1,6 @@
 package backend.zelkova.account.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -22,7 +23,7 @@ public class NormalAccount {
     private Long id;
 
     @MapsId
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     private Account account;
 
