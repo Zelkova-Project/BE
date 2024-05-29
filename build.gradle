@@ -55,6 +55,9 @@ dependencies {
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
     testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
     swaggerUI 'org.webjars:swagger-ui:5.15.1'
+
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 tasks.named('test') {

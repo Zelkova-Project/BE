@@ -1,5 +1,6 @@
 package backend.zelkova;
 
+import backend.zelkova.account.service.AccountDetailService;
 import backend.zelkova.account.service.AccountService;
 import backend.zelkova.admin.service.AdminService;
 import backend.zelkova.post.service.PostService;
@@ -34,6 +35,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected AdminService adminService;
+
+    @MockBean
+    protected AccountDetailService accountDetailService;
 
     protected <T> T getInstance(Class<T> clazz, Map<String, Object> params) throws Exception {
         Constructor<T> declaredConstructor = clazz.getDeclaredConstructor();

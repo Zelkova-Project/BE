@@ -42,7 +42,7 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        account = accountRepository.save(new Account("loginId", "password", "name", "nickname", "email"));
+        account = accountRepository.save(new Account("name", "nickname", "email"));
 
         firstPost = postRepository.save(createPost(account, "첫번째"));
         postRepository.save(createPost(account, "두번째"));

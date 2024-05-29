@@ -48,7 +48,7 @@ class CommentSupplierTest extends IntegrationTestSupport {
 
         // given
         Account account = accountRepository.save(
-                new Account("loginId", "password", "name", "nickname", "email@email.com"));
+                new Account("name", "nickname", "email@email.com"));
         Post post = postRepository.save(new Post(account, Category.BOARD, Visibility.PUBLIC, "title", "content"));
 
         // when

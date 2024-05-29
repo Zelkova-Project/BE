@@ -4,15 +4,42 @@ USE zelkova;
 CREATE TABLE `accounts`
 (
     `account_id` BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `login_id`   VARCHAR(20)  NOT NULL UNIQUE,
-    `password`   CHAR(60)     NOT NULL,
     `name`       VARCHAR(10)  NOT NULL,
     `nickname`   VARCHAR(20)  NULL,
     `email`      VARCHAR(255) NOT NULL,
     `created_at` DATETIME     NOT NULL,
     `updated_at` DATETIME     NOT NULL,
-    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE,
+    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `normal_accounts`
+(
+    `account_id` BIGINT,
+    `login_id`   VARCHAR(20) NOT NULL UNIQUE,
+    `password`   CHAR(60)    NOT NULL,
+    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
     INDEX `idx_login_id` (`login_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `socials`
+(
+    `social_code` VARCHAR(20) NOT NULL PRIMARY KEY
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE `social_accounts`
+(
+    `account_id`  BIGINT,
+    `social_code` VARCHAR(30) NOT NULL,
+    `social_id`   VARCHAR(30) NOT NULL,
+    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
+    FOREIGN KEY (`social_code`) REFERENCES `socials` (`social_code`),
+    INDEX `idx_social_id` (`social_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -163,3 +190,6 @@ VALUES ('HOME_COMMUNICATION'),
 INSERT INTO visibilities
 VALUES ('PUBLIC'),
        ('PRIVATE');
+
+INSERT INTO socials
+VALUES ('KAKAO');
