@@ -50,6 +50,10 @@ public class SecurityConfig {
                     .permitAll();
             authorizeRequests.requestMatchers("/roles/**")
                     .hasRole("ADMIN");
+
+            authorizeRequests.requestMatchers("/docs/**")
+                    .hasAnyRole("ADMIN", "MANAGER");
+
             authorizeRequests.anyRequest()
                     .authenticated();
         });

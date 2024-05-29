@@ -594,6 +594,9 @@ Temporary Items
 
 src/main/generated
 
+# static
+src/main/resources/static
+
 # Properties
 src/main/resources/*.properties
 !src/main/resources/application.properties
