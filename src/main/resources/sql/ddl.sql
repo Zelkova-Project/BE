@@ -8,8 +8,7 @@ CREATE TABLE `accounts`
     `nickname`   VARCHAR(20)  NULL,
     `email`      VARCHAR(255) NOT NULL,
     `created_at` DATETIME     NOT NULL,
-    `updated_at` DATETIME     NOT NULL,
-    `deleted`    BOOLEAN      NOT NULL DEFAULT FALSE
+    `updated_at` DATETIME     NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -94,7 +93,6 @@ CREATE TABLE `chats`
     `content`     TEXT     NOT NULL,
     `created_at`  DATETIME NOT NULL,
     `updated_at`  DATETIME NOT NULL,
-    `deleted`     BOOLEAN  NOT NULL,
     INDEX `idx_chatroom_id` (`chatroom_id`),
     INDEX `idx_account_id` (`account_id`),
     FOREIGN KEY (`chatroom_id`) REFERENCES `chatrooms` (`chatroom_id`),
@@ -127,35 +125,12 @@ CREATE TABLE `posts`
     `content`         TEXT         NOT NULL,
     `created_at`      DATETIME     NOT NULL,
     `updated_at`      DATETIME     NOT NULL,
-    `deleted`         BOOLEAN      NOT NULL DEFAULT FALSE,
     INDEX `idx_account_id` (`account_id`),
     FULLTEXT INDEX idx_ft_title (`title`) WITH PARSER `ngram`,
     FULLTEXT INDEX idx_ft_content (`content`) WITH PARSER `ngram`,
     FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
     FOREIGN KEY (`category_code`) REFERENCES `categories` (`category_code`),
     FOREIGN KEY (`visibility_code`) REFERENCES `visibilities` (`visibility_code`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
-CREATE TABLE `image`
-(
-    `saved_name`  BINARY(16)   NOT NULL PRIMARY KEY,
-    `path`        VARCHAR(50)  NOT NULL,
-    `origin_name` VARCHAR(100) NOT NULL,
-    `extension`   CHAR(4)      NOT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
-CREATE TABLE `post_images`
-(
-    `post_id`    BIGINT     NOT NULL,
-    `saved_name` BINARY(16) NOT NULL,
-    PRIMARY KEY (`post_id`, `saved_name`),
-    INDEX `idx_saved_name` (`saved_name`),
-    FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`),
-    FOREIGN KEY (`saved_name`) REFERENCES `image` (`saved_name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -168,7 +143,6 @@ CREATE TABLE `comments`
     `content`    TEXT     NOT NULL,
     `created_at` DATETIME NOT NULL,
     `updated_at` DATETIME NOT NULL,
-    `deleted`    BOOLEAN  NOT NULL,
     INDEX `idx_post_id` (`post_id`),
     INDEX `idx_account_id` (`account_id`),
     FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`),
