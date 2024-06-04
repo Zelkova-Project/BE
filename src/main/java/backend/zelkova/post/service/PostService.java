@@ -3,6 +3,8 @@ package backend.zelkova.post.service;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.operator.AccountReader;
+import backend.zelkova.attachment.dto.response.AttachmentResponse;
+import backend.zelkova.attachment.operator.AttachmentManager;
 import backend.zelkova.comment.model.PostCommentResponse;
 import backend.zelkova.comment.operator.CommentReader;
 import backend.zelkova.exception.CustomException;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,21 +38,25 @@ public class PostService {
     private final PostPermissionValidator postPermissionValidator;
     private final PostManager postManager;
     private final CommentReader commentReader;
+    private final AttachmentManager attachmentManager;
 
     @Transactional
-    public Long write(AccountDetail accountDetail, Category category, Visibility visibility,
-                      String title, String content) {
+    public Long write(AccountDetail accountDetail, Category category, Visibility visibility, String title,
+                      String content, List<MultipartFile> attachments) {
 
         Long accountId = accountDetail.getAccountId();
 
-        if (postPermissionValidator.hasPermission(category, accountId)) {
-            Account account = accountReader.findAccountById(accountId);
-            Post post = postSupplier.supply(account, category, visibility, title, content);
-
-            return post.getId();
+        if (!postPermissionValidator.hasPermission(category, accountId)) {
+            throw new CustomException(ExceptionStatus.NO_PERMISSION);
         }
 
-        throw new CustomException(ExceptionStatus.NO_PERMISSION);
+        Account account = accountReader.findAccountById(accountId);
+        Post post = postSupplier.supply(account, category, visibility, title, content);
+
+        Long postId = post.getId();
+        attachments.forEach(attachment -> attachmentManager.upload(postId, attachment));
+
+        return postId;
     }
 
     public Page<PostPreviewResponse> getPostPreviews(Pageable pageable) {
@@ -58,13 +65,14 @@ public class PostService {
 
     public PostResponse getPost(Long postId) {
         PostInfoResponse postInfoResponse = postReader.findPostResponseByPostId(postId);
+        List<AttachmentResponse> fileResponses = attachmentManager.findFiles(postId);
         List<PostCommentResponse> postComments = commentReader.findPostComments(postId);
-        return new PostResponse(postInfoResponse, postComments);
+        return new PostResponse(postInfoResponse, fileResponses, postComments);
     }
 
     @Transactional
     public void update(AccountDetail accountDetail, Long noticeId, Visibility visibility, String title,
-                       String content) {
+                       String content, List<String> deleteAttachmentKeys, List<MultipartFile> newAttachments) {
 
         Post post = postReader.findById(noticeId);
 
@@ -72,6 +80,9 @@ public class PostService {
             post.update(visibility, title, content);
             return;
         }
+
+        deleteAttachmentKeys.forEach(attachmentManager::delete);
+        newAttachments.forEach(attachment -> attachmentManager.upload(post.getId(), attachment));
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
@@ -90,13 +101,15 @@ public class PostService {
     }
 
     @Transactional
-    public void delete(AccountDetail accountDetail, Long noticeId) {
-        Post post = postReader.findById(noticeId);
+    public void delete(AccountDetail accountDetail, Long postId) {
+        Post post = postReader.findById(postId);
 
         if (postPermissionValidator.hasPermission(post, accountDetail.getAccountId())) {
             postManager.delete(post);
             return;
         }
+
+        attachmentManager.deleteAll(postId);
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }

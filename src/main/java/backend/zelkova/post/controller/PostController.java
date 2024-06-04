@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,10 +44,11 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
-                                      @RequestBody @Valid PostUploadRequest postUploadRequest) {
+                                      @ModelAttribute @Valid PostUploadRequest postUploadRequest) {
 
         Long postId = postService.write(accountDetail, postUploadRequest.getCategory(),
-                postUploadRequest.getVisibility(), postUploadRequest.getTitle(), postUploadRequest.getContent());
+                postUploadRequest.getVisibility(), postUploadRequest.getTitle(), postUploadRequest.getContent(),
+                postUploadRequest.getFiles());
 
         return ResponseEntity.created(URI.create("/posts/" + postId))
                 .build();
@@ -57,7 +59,8 @@ public class PostController {
                                        @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
         postService.update(accountDetail, postUpdateRequest.getPostId(), postUpdateRequest.getVisibility(),
-                postUpdateRequest.getTitle(), postUpdateRequest.getContent());
+                postUpdateRequest.getTitle(), postUpdateRequest.getContent(),
+                postUpdateRequest.getDeleteAttachmentKeys(), postUpdateRequest.getNewAttachments());
 
         return ResponseEntity.noContent()
                 .build();
