@@ -4,9 +4,11 @@ import backend.zelkova.post.model.Visibility;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,4 +26,8 @@ public class PostUpdateRequest {
 
     @NotEmpty
     private String content;
+
+    private List<String> deleteAttachmentKeys;
+
+    private List<MultipartFile> newAttachments;
 }
