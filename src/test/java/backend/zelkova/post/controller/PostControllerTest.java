@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.epages.restdocs.apispec.Schema.schema;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -19,9 +20,8 @@ import backend.zelkova.ControllerTestSupport;
 import backend.zelkova.comment.model.PostCommentResponse;
 import backend.zelkova.post.dto.request.PostDeleteRequest;
 import backend.zelkova.post.dto.request.PostMoveRequest;
-import backend.zelkova.post.dto.request.PostRequest;
 import backend.zelkova.post.dto.request.PostUpdateRequest;
-import backend.zelkova.post.dto.response.PostAndCommentResponse;
+import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.model.Category;
@@ -111,14 +111,15 @@ class PostControllerTest extends ControllerTestSupport {
     void getPost() throws Exception {
 
         // given
-        PostAndCommentResponse result = new PostAndCommentResponse(
-                new PostResponse(
+        PostResponse result = new PostResponse(
+                new PostInfoResponse(
                         1L, "관리자", 1L, "첫번째", "내용",
                         LocalDateTime.of(2024, 5, 20, 13, 0),
                         new PostPreviewResponse(null, null, null),
                         new PostPreviewResponse(2L, "두번째",
                                 LocalDateTime.of(2024, 5, 20, 14, 0))
                 ),
+                List.of(),
                 List.of(new PostCommentResponse(2L, "매니저", 1L, "댓글"))
         );
 
@@ -138,28 +139,36 @@ class PostControllerTest extends ControllerTestSupport {
                                 .description("글을 확인합니다.")
                                 .pathParameters(parameterWithName("postId").description("글 id"))
                                 .responseFields(
-                                        fieldWithPath("postResponse.accountId").description("작성자 id"),
-                                        fieldWithPath("postResponse.accountName").description("작성자 이름"),
-                                        fieldWithPath("postResponse.no").description("글 id"),
-                                        fieldWithPath("postResponse.title").description("글 제목"),
-                                        fieldWithPath("postResponse.content").description("글 내용"),
-                                        fieldWithPath("postResponse.dateTime").description("글 작성 시각"),
+                                        fieldWithPath("postInfoResponse.accountId").description("작성자 id"),
+                                        fieldWithPath("postInfoResponse.accountName").description("작성자 이름"),
+                                        fieldWithPath("postInfoResponse.no").description("글 id"),
+                                        fieldWithPath("postInfoResponse.title").description("글 제목"),
+                                        fieldWithPath("postInfoResponse.content").description("글 내용"),
+                                        fieldWithPath("postInfoResponse.dateTime").description("글 작성 시각"),
 
-                                        fieldWithPath("postResponse.prev").description("이전글 정보"),
-                                        fieldWithPath("postResponse.prev.no").optional().type(NUMBER)
+                                        fieldWithPath("postInfoResponse.prev").description("이전글 정보"),
+                                        fieldWithPath("postInfoResponse.prev.no").optional().type(NUMBER)
                                                 .description("이전글 id"),
-                                        fieldWithPath("postResponse.prev.title").optional().type(STRING)
+                                        fieldWithPath("postInfoResponse.prev.title").optional().type(STRING)
                                                 .description("이전글 제목"),
-                                        fieldWithPath("postResponse.prev.dateTime").optional().type(STRING)
+                                        fieldWithPath("postInfoResponse.prev.dateTime").optional().type(STRING)
                                                 .description("이전글 작성 시각"),
 
-                                        fieldWithPath("postResponse.next").description("다음글 정보"),
-                                        fieldWithPath("postResponse.next.no").optional().type(NUMBER)
+                                        fieldWithPath("postInfoResponse.next").description("다음글 정보"),
+                                        fieldWithPath("postInfoResponse.next.no").optional().type(NUMBER)
                                                 .description("다음글 id"),
-                                        fieldWithPath("postResponse.next.title").optional().type(STRING)
+                                        fieldWithPath("postInfoResponse.next.title").optional().type(STRING)
                                                 .description("다음글 제목"),
-                                        fieldWithPath("postResponse.next.dateTime").optional().type(STRING)
+                                        fieldWithPath("postInfoResponse.next.dateTime").optional().type(STRING)
                                                 .description("다음글 작성 시각"),
+
+                                        fieldWithPath("attachmentResponses").description("첨부 파일"),
+                                        fieldWithPath("attachmentResponses[].originFileName").optional().type(STRING)
+                                                .description("파일 업로드시의 이름"),
+                                        fieldWithPath("attachmentResponses[].key").optional().type(STRING)
+                                                .description("업로드된 첨부파일 key"),
+                                        fieldWithPath("attachmentResponses[].url").optional().type(STRING)
+                                                .description("파일 다운로드 가능한 url"),
 
                                         fieldWithPath("postCommentResponses[].accountId").description("댓글 작성자 id"),
                                         fieldWithPath("postCommentResponses[].name").description("댓글 작성자 이름"),
@@ -176,22 +185,17 @@ class PostControllerTest extends ControllerTestSupport {
     void writePost() throws Exception {
 
         // given
-        PostRequest postRequest = getInstance(PostRequest.class, Map.of(
-                "category", Category.BOARD,
-                "visibility", Visibility.PUBLIC,
-                "title", "title",
-                "content", "content"
-        ));
-
-        given(postService.write(any(), any(), any(), anyString(), anyString()))
+        given(postService.write(any(), any(), any(), anyString(), anyString(), anyList()))
                 .willReturn(1L);
 
         // when
         // then
         mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/posts")
-                                .content(objectMapper.writeValueAsString(postRequest))
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("category", Category.BOARD.name())
+                                .param("visibility", Visibility.PUBLIC.name())
+                                .param("title", "title")
+                                .param("content", "content")
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("location"))
@@ -199,12 +203,14 @@ class PostControllerTest extends ControllerTestSupport {
                         resource(ResourceSnippetParameters.builder()
                                 .summary("글 작성")
                                 .description("글을 작성합니다.")
-                                .requestFields(
-                                        fieldWithPath("category").description("글 작성 카테고리"),
-                                        fieldWithPath("visibility").description(
+                                .formParameters(
+                                        parameterWithName("category").description("글 작성 카테고리"),
+                                        parameterWithName("visibility").description(
                                                 "글 공개 범위 [PUBLIC: 공개 PRIVATE: 비공개]"),
-                                        fieldWithPath("title").description("글 제목"),
-                                        fieldWithPath("content").description("글 내용")
+                                        parameterWithName("title").description("글 제목"),
+                                        parameterWithName("content").description("글 내용"),
+                                        parameterWithName("files").optional()
+                                                .description("첨부 파일")
                                 )
                                 .requestSchema(schema("writePostRequestForm"))
                                 .build())));
@@ -212,7 +218,7 @@ class PostControllerTest extends ControllerTestSupport {
 
     @Test
     @WithMockUser
-    @DisplayName("글 작성")
+    @DisplayName("글 수정")
     void updatePost() throws Exception {
 
         // given
@@ -224,7 +230,7 @@ class PostControllerTest extends ControllerTestSupport {
         ));
 
         doNothing().when(postService)
-                .update(any(), anyLong(), any(), anyString(), anyString());
+                .update(any(), anyLong(), any(), anyString(), anyString(), anyList(), anyList());
 
         // when
         // then
@@ -243,7 +249,11 @@ class PostControllerTest extends ControllerTestSupport {
                                         fieldWithPath("visibility").description(
                                                 "공개 범위 수정 [PUBLIC: 공개 PRIVATE: 비공개]"),
                                         fieldWithPath("title").description("제목 수정"),
-                                        fieldWithPath("content").description("내용 수정")
+                                        fieldWithPath("content").description("내용 수정"),
+                                        fieldWithPath("deleteAttachmentKeys").optional()
+                                                .description("삭제할 첨부파일 key"),
+                                        fieldWithPath("newAttachments").optional()
+                                                .description("추가할 첨부파일")
                                 )
                                 .requestSchema(schema("updatePostRequestForm"))
                                 .build())));
