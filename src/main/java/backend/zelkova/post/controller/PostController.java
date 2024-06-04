@@ -3,10 +3,10 @@ package backend.zelkova.post.controller;
 import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.post.dto.request.PostDeleteRequest;
 import backend.zelkova.post.dto.request.PostMoveRequest;
-import backend.zelkova.post.dto.request.PostRequest;
 import backend.zelkova.post.dto.request.PostUpdateRequest;
-import backend.zelkova.post.dto.response.PostAndCommentResponse;
+import backend.zelkova.post.dto.request.PostUploadRequest;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
+import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.service.PostService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -37,16 +37,16 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostAndCommentResponse> getPost(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
     }
 
     @PostMapping
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
-                                      @RequestBody @Valid PostRequest postRequest) {
+                                      @RequestBody @Valid PostUploadRequest postUploadRequest) {
 
-        Long postId = postService.write(accountDetail, postRequest.getCategory(), postRequest.getVisibility(),
-                postRequest.getTitle(), postRequest.getContent());
+        Long postId = postService.write(accountDetail, postUploadRequest.getCategory(),
+                postUploadRequest.getVisibility(), postUploadRequest.getTitle(), postUploadRequest.getContent());
 
         return ResponseEntity.created(URI.create("/posts/" + postId))
                 .build();

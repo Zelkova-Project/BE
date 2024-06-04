@@ -7,7 +7,7 @@ import backend.zelkova.comment.model.PostCommentResponse;
 import backend.zelkova.comment.operator.CommentReader;
 import backend.zelkova.exception.CustomException;
 import backend.zelkova.exception.ExceptionStatus;
-import backend.zelkova.post.dto.response.PostAndCommentResponse;
+import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
@@ -56,10 +56,10 @@ public class PostService {
         return postReader.findAll(pageable);
     }
 
-    public PostAndCommentResponse getPost(Long postId) {
-        PostResponse postResponse = postReader.findPostResponseByPostId(postId);
+    public PostResponse getPost(Long postId) {
+        PostInfoResponse postInfoResponse = postReader.findPostResponseByPostId(postId);
         List<PostCommentResponse> postComments = commentReader.findPostComments(postId);
-        return new PostAndCommentResponse(postResponse, postComments);
+        return new PostResponse(postInfoResponse, postComments);
     }
 
     @Transactional
