@@ -22,10 +22,8 @@ jobs:
 
       - name: 테스트
         run: |
-          echo "${{ env.BRANCH }}"
-          
           if [ "${{ env.BRANCH }}" == "release" || "${{ env.BRANCH }}" == "master" ]; then
             ./gradlew test -Pprofile=${{ env.BRANCH }}
           else
-            ./gradlew test -Pprofile=local
+            ./gradlew test
           fi
