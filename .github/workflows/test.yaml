@@ -1,0 +1,15 @@
+on:
+  pull_request:
+    branches: [ develop, release, master ]
+
+jobs:
+  load:
+    uses: ./job/load.yaml
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [ load ]
+
+    steps:
+      - name: 테스트
+        run: ./gradlew test
