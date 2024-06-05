@@ -13,8 +13,9 @@ jobs:
         run: |
           branch=${{ github.base_ref || github.ref_name }}
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
-        outputs:
-          branch: ${{ steps.branch.outputs.branch }}
+
+    outputs:
+      branch: ${{ steps.branch.outputs.branch }}
 
   load:
     runs-on: ubuntu-latest
