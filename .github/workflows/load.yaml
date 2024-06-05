@@ -12,6 +12,7 @@ jobs:
         run: |
           branch=${GITHUB_REF##*/}
           echo "BRANCH=${branch}" >> $GITHUB_ENV
+          echo "${{ env.BRANCH }}"
 
   load:
     runs-on: ubuntu-latest
