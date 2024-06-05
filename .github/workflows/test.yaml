@@ -15,10 +15,10 @@ jobs:
       - name: 필요 설정 로드
         uses: ./.github/actions/load
         with:
-          KAKAO_PROPERTIES: ${{ secret.KAKAO_PROPERTIES }}
-          OBJECT_STORAGE_PROPERTIES: ${{ secret.OBJECT_STORAGE_PROPERTIES }}
-          RELEASE_PROPERTIES: ${{ secret.RELEASE_PROPERTIES }}
-          MASTER_PROPERTIES: ${{ secret.MASTER_PROPERTIES }}
+          KAKAO_PROPERTIES: ${{ secrets.KAKAO_PROPERTIES }}
+          OBJECT_STORAGE_PROPERTIES: ${{ secrets.OBJECT_STORAGE_PROPERTIES }}
+          RELEASE_PROPERTIES: ${{ secrets.RELEASE_PROPERTIES }}
+          MASTER_PROPERTIES: ${{ secrets.MASTER_PROPERTIES }}
 
       - name: 테스트
         run: |
