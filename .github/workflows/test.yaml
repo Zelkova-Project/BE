@@ -4,10 +4,7 @@ on:
 
 jobs:
   load:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/actions/branch
-      - uses: ./.github/actions/load
+    uses: ./.github/workflows/load.yaml
 
   test:
     runs-on: ubuntu-latest
@@ -16,7 +13,7 @@ jobs:
     steps:
       - name: 테스트
         env:
-          BRANCH: ${{ needs.branch.outputs.branch }}
+          BRANCH: ${{ needs.load.outputs.branch }}
         run: |
           if [ $BRANCH ]; then
             ./gradlew test -Pprofile=$BRANCH
