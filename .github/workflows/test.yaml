@@ -6,6 +6,7 @@ jobs:
   load:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/branch
       - uses: ./.github/actions/load
 

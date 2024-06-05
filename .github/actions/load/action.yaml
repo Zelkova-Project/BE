@@ -3,8 +3,6 @@ description: 각종 설정을 불러온다
 runs:
   using: 'composite'
   steps:
-    - name: repository 불러오기
-      uses: actions/checkout@v4
 
     - name: JDK 설정
       uses: actions/setup-java@v4

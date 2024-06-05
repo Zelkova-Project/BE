@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/branch
       - uses: ./.github/actions/load
       - name: 포트 설정하기
