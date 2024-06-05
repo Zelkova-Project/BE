@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: 브랜치 가져오기
         run: |
-          branch=${GITHUB_REF##*/}
+          branch=${{ github.base_ref || github.ref_name }}
           echo "BRANCH=${branch}" >> $GITHUB_ENV
           echo "${{ env.BRANCH }}"
 
