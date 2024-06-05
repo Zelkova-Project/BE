@@ -28,7 +28,6 @@ runs:
 
     - name: properties 불러오기
       run: |
-        echo "${{ env.BRANCH }}"
         echo "${{ inputs.KAKAO_PROPERTIES }}" > ./src/main/resources/application-kakao.properties
         echo "${{ inputs.OBJECT_STORAGE_PROPERTIES }}" > ./src/main/resources/application-object-storage.properties
         
