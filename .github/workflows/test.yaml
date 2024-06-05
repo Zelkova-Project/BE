@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: 테스트
         run: |
-          if [ "${{ env.BRANCH }}" ]; then
-            ./gradlew test -Pprofile="${{ env.BRANCH }}"
+          if [ "${{ branch }}" != "" ]; then
+            ./gradlew test -Pprofile="${{ branch }}"
           else
             ./gradlew test
           fi
