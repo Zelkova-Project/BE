@@ -101,19 +101,26 @@ tasks.withType(GenerateSwaggerUI).configureEach {
 
 tasks.register("copySwaggerUISample") {
     doLast {
+        def destinationDir
+
+        if ("${profile}" == 'local') {
+            destinationDir = "src/main/resources/static/docs/"
+        } else if ("${profile}" == 'release') {
+            destinationDir = "${layout.buildDirectory.dir("resources/main/static/docs/").get()}"
+        }
+
         copy {
             from("${generateSwaggerUISample.outputDir}")
-            into("src/main/resources/static/docs/")
+            into(destinationDir)
         }
     }
 }
 
 bootJar {
-    dependsOn generateSwaggerUISample
-
     ext.profile = (!project.hasProperty('profile') || !profile) ? 'none' : profile
 
-    if ("${profile}" == 'local') {
+    if ("${profile}" == 'local' || "${profile}" == 'release') {
+        dependsOn generateSwaggerUISample
         finalizedBy copySwaggerUISample
     }
 }
