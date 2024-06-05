@@ -22,7 +22,7 @@ jobs:
 
       - name: 테스트
         run: |
-          if [ "${{ env.BRANCH }}" == "release" || "${{ env.BRANCH }}" == "master" ]; then
+          if [[ "${{ env.BRANCH }}" == "release" || "${{ env.BRANCH }}" == "master" ]]; then
             ./gradlew test -Pprofile=${{ env.BRANCH }}
           else
             ./gradlew test
