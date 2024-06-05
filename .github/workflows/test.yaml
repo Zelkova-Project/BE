@@ -4,7 +4,7 @@ on:
 
 jobs:
   load:
-    uses: ./job/load.yaml
+    uses: ./.github/workflows/job/load.yaml
 
   test:
     runs-on: ubuntu-latest
