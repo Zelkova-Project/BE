@@ -10,9 +10,9 @@ jobs:
     steps:
       - name: 브랜치 가져오고 포트 설정하기
         run: |
-          if [ "$BRANCH" == "master" ]; then
+          if [ "${{ env.BRANCH }}" == "master" ]; then
             echo "PORT=443" >> $GITHUB_ENV
-          elif [ "$BRANCH" == "release" ]; then
+          elif [ "${{ env.BRANCH }}" == "release" ]; then
             echo "PORT=8080" >> $GITHUB_ENV
           fi
 
@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: 테스트 및 빌드
-        run: ./gradlew clean build -Pprofile="$BRANCH"
+        run: ./gradlew clean build -Pprofile="${{ env.BRANCH }}"
 
       - name: 빌드된 파일 이름 변경
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
@@ -47,10 +47,10 @@ jobs:
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           script_stop: true
           scripts: |
-            rm -rf /home/ubuntu/zelkova/"$BRANCH"/current
-            mkdir /home/ubuntu/zelkova/"$BRANCH"/current
-            mv /home/ubuntu/zelkova/new/project.jar /home/ubuntu/zelkova/"$BRANCH"/current/project.jar
-            cd /home/ubuntu/zelkova/"$BRANCH"/current
+            rm -rf /home/ubuntu/zelkova/"${{ env.BRANCH }}"/current
+            mkdir /home/ubuntu/zelkova/"${{ env.BRANCH }}"/current
+            mv /home/ubuntu/zelkova/new/project.jar /home/ubuntu/zelkova/"${{ env.BRANCH }}"/current/project.jar
+            cd /home/ubuntu/zelkova/"${{ env.BRANCH }}"/current
             sudo fuser -k -n tcp "$PORT" || true
             nohup java -jar project.jar --server.port="$PORT" > ./output.log 2>&1 &
             rm -rf /home/ubuntu/zelkova/new
