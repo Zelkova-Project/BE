@@ -240,7 +240,7 @@ class PostControllerTest extends ControllerTestSupport {
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent())
-                .andDo(document("writePost",
+                .andDo(document("updatePost",
                         resource(ResourceSnippetParameters.builder()
                                 .summary("글 수정")
                                 .description("글을 수정합니다.")
