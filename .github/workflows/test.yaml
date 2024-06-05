@@ -12,9 +12,11 @@ jobs:
 
     steps:
       - name: 테스트
+        env:
+          BRANCH: ${{ needs.branch.outputs.branch }}
         run: |
-          if [ ${{ needs.load.output.branch }} ]; then
-            ./gradlew test -Pprofile=${{ needs.load.output.branch }}
+          if [ $BRANCH ]; then
+            ./gradlew test -Pprofile=$BRANCH
           else
             ./gradlew test
           fi

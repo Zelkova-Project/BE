@@ -9,9 +9,12 @@ jobs:
 
     steps:
       - name: 브랜치 가져오기
-        run: branch=${{ github.base_ref || github.ref_name }}
+        id: branch
+        run: |
+          branch=${{ github.base_ref || github.ref_name }}
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
         outputs:
-          branch: ${branch}
+          branch: ${{ steps.branch.outputs.branch }}
 
   load:
     runs-on: ubuntu-latest
@@ -28,13 +31,15 @@ jobs:
           java-version: 17
 
       - name: properties 불러오기
+        env:
+          BRANCH: ${{ needs.branch.outputs.branch }}
         run: |
-          echo "$branch"
+          echo "$BRANCH"
           echo "${{ secrets.KAKAO_PROPERTIES }}" > ./src/main/resources/application-kakao.properties
           echo "${{ secrets.OBJECT_STORAGE_PROPERTIES }}" > ./src/main/resources/application-object-storage.properties
           
-          if [ "$branch" == "release" ]; then
+          if [ "$BRANCH" == "release" ]; then
             echo "${{ secrets.RELEASE_PROPERTIES }}" > ./src/main/resources/application-release.properties
-          elif [ "$branch" == "master" ]; then
+          elif [ "$BRANCH" == "master" ]; then
             echo "${{ secrets.MASTER_PROPERTIES }}" > ./src/main/resources/application-deploy.properties
           fi
