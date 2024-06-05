@@ -48,7 +48,7 @@ public class SecurityConfig {
                     .permitAll();
             authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**")
                     .permitAll();
-            authorizeRequests.requestMatchers("/roles/**")
+            authorizeRequests.requestMatchers("/roles/**", "/swagger-ui/**")
                     .hasRole("ADMIN");
 
             authorizeRequests.requestMatchers("/docs/**")
