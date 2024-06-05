@@ -3,24 +3,27 @@ on:
     branches: [ develop, release, master ]
 
 jobs:
-  load:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/branch
-      - uses: ./.github/actions/load
-
   test:
     runs-on: ubuntu-latest
-    needs: load
-
     steps:
+      - name: repository 로드
+        uses: actions/checkout@v4
+
+      - name: 현재 브랜치 획득
+        uses: ./.github/actions/branch
+
+      - name: 필요 설정 로드
+        uses: ./.github/actions/load
+        with:
+          KAKAO_PROPERTIES: ${{ secret.KAKAO_PROPERTIES }}
+          OBJECT_STORAGE_PROPERTIES: ${{ secret.OBJECT_STORAGE_PROPERTIES }}
+          RELEASE_PROPERTIES: ${{ secret.RELEASE_PROPERTIES }}
+          MASTER_PROPERTIES: ${{ secret.MASTER_PROPERTIES }}
+
       - name: 테스트
-        env:
-          BRANCH: ${{ needs.branch.outputs.branch }}
         run: |
-          if [ $BRANCH ]; then
-            ./gradlew test -Pprofile=$BRANCH
+          if [ ${{ env.BRANCH }} ]; then
+            ./gradlew test -Pprofile=${{ env.BRANCH }}
           else
             ./gradlew test
           fi
