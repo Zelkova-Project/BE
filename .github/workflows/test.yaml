@@ -15,6 +15,7 @@ jobs:
         env:
           BRANCH: ${{ needs.load.outputs.branch }}
         run: |
+          echo $BRANCH
           if [ $BRANCH ]; then
             ./gradlew test -Pprofile=$BRANCH
           else
