@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: ./.github/workflows/actions/branch
       - uses: ./.github/workflows/actions/load
       - name: 포트 설정하기
         run: |

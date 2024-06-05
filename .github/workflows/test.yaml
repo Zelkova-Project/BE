@@ -6,6 +6,7 @@ jobs:
   load:
     runs-on: ubuntu-latest
     steps:
+      - uses: ./.github/workflows/actions/branch
       - uses: ./.github/workflows/actions/load
 
   test:
