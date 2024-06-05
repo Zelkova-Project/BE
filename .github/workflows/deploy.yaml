@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: ./.github/workflows/step/branch.yaml
-      - uses: ./.github/workflows/step/load.yaml
+      - uses: ./.github/workflows/actions/load
       - name: 포트 설정하기
         run: |
           if [ "${{ env.BRANCH }}" == "master" ]; then

@@ -6,8 +6,7 @@ jobs:
   load:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/step/branch.yaml
-      - uses: ./.github/workflows/step/load.yaml
+      - uses: ./.github/workflows/actions/load
 
   test:
     runs-on: ubuntu-latest
