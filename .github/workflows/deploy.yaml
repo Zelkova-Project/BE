@@ -19,7 +19,7 @@ jobs:
           fi
 
   load:
-    uses: ./.github/workflows/job/load.yaml
+    uses: ./.github/workflows/load.yaml
 
   build:
     runs-on: ubuntu-latest
