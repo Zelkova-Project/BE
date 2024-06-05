@@ -1,0 +1,40 @@
+name: 설정 불러오기
+description: 각종 설정을 불러온다
+
+inputs:
+  KAKAO_PROPERTIES:
+    description: 카카오 properties
+    required: true
+
+  OBJECT_STORAGE_PROPERTIES:
+    description: 오브젝트 스토리지 properties
+    required: true
+
+  RELEASE_PROPERTIES:
+    description: 릴리즈 properties
+
+  MASTER_PROPERTIES:
+    description: 운영 properties
+
+runs:
+  using: 'composite'
+  steps:
+
+    - name: JDK 설정
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
+
+    - name: properties 불러오기
+      run: |
+        echo "${{ inputs.KAKAO_PROPERTIES }}" > ./src/main/resources/application-kakao.properties
+        echo "${{ inputs.OBJECT_STORAGE_PROPERTIES }}" > ./src/main/resources/application-object-storage.properties
+        
+        if [ "${{ env.BRANCH }}" == "release" ]; then
+          echo "${{ inputs.RELEASE_PROPERTIES }}" > ./src/main/resources/application-release.properties
+        elif [ "${{ env.BRANCH }}" == "master" ]; then
+          echo "${{ inputs.MASTER_PROPERTIES }}" > ./src/main/resources/application-deploy.properties
+        fi
+
+      shell: bash
