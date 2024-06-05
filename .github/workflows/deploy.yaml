@@ -17,12 +17,17 @@ jobs:
 
       - name: 필요 설정 로드
         uses: ./.github/actions/load
+        with:
+          KAKAO_PROPERTIES: ${{ secrets.KAKAO_PROPERTIES }}
+          OBJECT_STORAGE_PROPERTIES: ${{ secrets.OBJECT_STORAGE_PROPERTIES }}
+          RELEASE_PROPERTIES: ${{ secrets.RELEASE_PROPERTIES }}
+          MASTER_PROPERTIES: ${{ secrets.MASTER_PROPERTIES }}
 
       - name: 포트 설정
         run: |
-          if [ "${{ env.BRANCH }}" == "master" ]; then
+          if [[ "${{ env.BRANCH }}" == "master" ]]; then
             echo "PORT=443" >> $GITHUB_ENV
-          elif [ "${{ env.BRANCH }}" == "release" ]; then
+          elif [[ "${{ env.BRANCH }}" == "release" ]]; then
             echo "PORT=8080" >> $GITHUB_ENV
           fi
 
