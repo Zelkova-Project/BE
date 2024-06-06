@@ -1,6 +1,7 @@
 package backend.zelkova.comment.service;
 
 import backend.zelkova.comment.entity.Comment;
+import backend.zelkova.comment.operator.CommentManager;
 import backend.zelkova.comment.operator.CommentPermissionValidator;
 import backend.zelkova.comment.operator.CommentReader;
 import backend.zelkova.comment.operator.CommentSupplier;
@@ -18,6 +19,7 @@ public class CommentService {
     private final CommentSupplier commentSupplier;
     private final CommentReader commentReader;
     private final CommentPermissionValidator commentPermissionValidator;
+    private final CommentManager commentManager;
 
     @Transactional
     public void write(Long postId, Long accountId, String comment) {
@@ -33,5 +35,16 @@ public class CommentService {
         }
 
         comment.updateContent(content);
+    }
+
+    @Transactional
+    public void delete(Long commentId, Long accountId) {
+        Comment comment = commentReader.findById(commentId);
+
+        if (!commentPermissionValidator.isOwner(comment, accountId)) {
+            throw new CustomException(ExceptionStatus.NO_PERMISSION);
+        }
+
+        commentManager.delete(comment);
     }
 }

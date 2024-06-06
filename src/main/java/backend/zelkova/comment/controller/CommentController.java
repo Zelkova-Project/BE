@@ -1,6 +1,7 @@
 package backend.zelkova.comment.controller;
 
 import backend.zelkova.account.model.AccountDetail;
+import backend.zelkova.comment.dto.request.CommentDeleteRequest;
 import backend.zelkova.comment.dto.request.CommentUpdateRequest;
 import backend.zelkova.comment.dto.request.CommentWriteRequest;
 import backend.zelkova.comment.service.CommentService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +41,16 @@ public class CommentController {
 
         commentService.update(commentUpdateRequest.getCommentId(), accountDetail.getAccountId(),
                 commentUpdateRequest.getContent());
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
+                                       @RequestBody @Valid CommentDeleteRequest commentDeleteRequest) {
+
+        commentService.delete(commentDeleteRequest.getCommentId(), accountDetail.getAccountId());
 
         return ResponseEntity.noContent()
                 .build();
