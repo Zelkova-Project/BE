@@ -2,6 +2,7 @@ package backend.zelkova.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,8 @@ public enum ExceptionStatus {
     NOT_PARTICIPANT_ACCOUNT("해당 채팅방의 참여자가 아닙니다."),
     NOTFOUND("요청하신 데이터가 존재하지 않습니다."),
     NO_PERMISSION("권한이 없습니다.", FORBIDDEN),
-    LOGIN_FAILURE("로그인에 실패했습니다.");
+    FAIL_CONVERT("변환에 실패했습니다."),
+    FAIL_ATTACHMENT_UPLOAD("첨부파일 업로드에 실패했습니다. 다시 시도해주세요.", INTERNAL_SERVER_ERROR);
 
     private final String message;
     private final HttpStatus httpStatus;

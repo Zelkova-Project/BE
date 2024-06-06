@@ -31,7 +31,7 @@ class AccountRoleRepositoryTest extends IntegrationTestSupport {
     void insert() throws Exception {
 
         // given
-        Account account = new Account("loginId", "password", "name", "nickname", "eora21@naver.com");
+        Account account = new Account("name", "nickname", "eora21@naver.com");
         accountRepository.save(account);
 
         accountRoleRepository.save(new AccountRole(account, Role.MANAGER));

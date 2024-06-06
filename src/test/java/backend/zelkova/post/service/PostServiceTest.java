@@ -8,7 +8,7 @@ import backend.zelkova.comment.model.PostCommentResponse;
 import backend.zelkova.comment.repository.CommentRepository;
 import backend.zelkova.helper.HardDeleteSupplier;
 import backend.zelkova.helper.TransactionWrapper;
-import backend.zelkova.post.dto.response.PostAndCommentResponse;
+import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
 import backend.zelkova.post.model.Category;
@@ -53,21 +53,21 @@ class PostServiceTest extends IntegrationTestSupport {
 
         // given
         Account account = accountRepository.save(
-                new Account("loginId", "password", "name", "nickname", "email@email.com"));
+                new Account("name", "nickname", "email@email.com"));
         Post post = postRepository.save(new Post(account, Category.BOARD, Visibility.PUBLIC, "title", "content"));
         commentRepository.save(new Comment(post, account, "첫번째 댓글"));
         commentRepository.save(new Comment(post, account, "두번째 댓글"));
         commentRepository.save(new Comment(post, account, "세번째 댓글"));
 
         // when
-        PostAndCommentResponse postAndCommentResponse = postService.getPost(post.getId());
+        PostResponse postResponse = postService.getPost(post.getId());
 
         // then
-        Assertions.assertThat(postAndCommentResponse.postResponse())
-                .extracting(PostResponse::accountId, PostResponse::content)
+        Assertions.assertThat(postResponse.postInfoResponse())
+                .extracting(PostInfoResponse::accountId, PostInfoResponse::content)
                 .containsExactly(account.getId(), "content");
 
-        Assertions.assertThat(postAndCommentResponse.postCommentResponses())
+        Assertions.assertThat(postResponse.postCommentResponses())
                 .extracting(PostCommentResponse::comment)
                 .containsExactly("첫번째 댓글", "두번째 댓글", "세번째 댓글");
     }

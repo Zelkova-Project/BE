@@ -24,13 +24,6 @@ public class Account extends BaseEntity {
     private Long id;
 
     @NotBlank
-    private String loginId;
-
-    @NotBlank
-    @Column(columnDefinition = "CHAR(60)")
-    private String password;
-
-    @NotBlank
     private String name;
 
     private String nickname;
@@ -39,9 +32,7 @@ public class Account extends BaseEntity {
     @Column(columnDefinition = "VARCHAR(255)")
     private String email;
 
-    public Account(String loginId, String password, String name, String nickname, String email) {
-        this.loginId = loginId;
-        this.password = password;
+    public Account(String name, String nickname, String email) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;

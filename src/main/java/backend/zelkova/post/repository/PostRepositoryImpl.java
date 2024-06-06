@@ -3,10 +3,10 @@ package backend.zelkova.post.repository;
 import static backend.zelkova.account.entity.QAccount.account;
 import static backend.zelkova.post.entity.QPost.post;
 
+import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
-import backend.zelkova.post.dto.response.PostResponse;
+import backend.zelkova.post.dto.response.QPostInfoResponse;
 import backend.zelkova.post.dto.response.QPostPreviewResponse;
-import backend.zelkova.post.dto.response.QPostResponse;
 import backend.zelkova.post.entity.QPost;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,13 +45,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    public PostResponse retrievePostResponse(Long postId) {
+    public PostInfoResponse retrievePostResponse(Long postId) {
 
         QPost prev = new QPost("prev");
         QPost next = new QPost("next");
 
         return jpaQueryFactory
-                .select(new QPostResponse(
+                .select(new QPostInfoResponse(
                         account.id,
                         account.name,
                         post.id,
