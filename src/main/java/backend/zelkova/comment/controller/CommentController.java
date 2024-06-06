@@ -1,6 +1,7 @@
 package backend.zelkova.comment.controller;
 
 import backend.zelkova.account.model.AccountDetail;
+import backend.zelkova.comment.dto.request.CommentUpdateRequest;
 import backend.zelkova.comment.dto.request.CommentWriteRequest;
 import backend.zelkova.comment.service.CommentService;
 import jakarta.validation.Valid;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,17 @@ public class CommentController {
                 commentWriteRequest.getComment());
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
+                                       @RequestBody @Valid CommentUpdateRequest commentUpdateRequest) {
+
+        commentService.update(commentUpdateRequest.getCommentId(), accountDetail.getAccountId(),
+                commentUpdateRequest.getContent());
+
+        return ResponseEntity.noContent()
                 .build();
     }
 }
