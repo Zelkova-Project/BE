@@ -1,7 +1,7 @@
 package backend.zelkova.comment.controller;
 
 import backend.zelkova.account.model.AccountDetail;
-import backend.zelkova.comment.dto.request.CommentRequest;
+import backend.zelkova.comment.dto.request.CommentWriteRequest;
 import backend.zelkova.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,11 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Void> addComment(@AuthenticationPrincipal AccountDetail accountDetail,
-                                           @RequestBody @Valid CommentRequest commentRequest) {
+    public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
+                                      @RequestBody @Valid CommentWriteRequest commentWriteRequest) {
 
-        commentService.write(commentRequest.getPostId(), accountDetail.getAccountId(), commentRequest.getComment());
+        commentService.write(commentWriteRequest.getPostId(), accountDetail.getAccountId(),
+                commentWriteRequest.getComment());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
