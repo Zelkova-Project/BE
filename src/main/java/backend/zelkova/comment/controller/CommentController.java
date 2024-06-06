@@ -1,13 +1,17 @@
 package backend.zelkova.comment.controller;
 
 import backend.zelkova.account.model.AccountDetail;
-import backend.zelkova.comment.dto.request.CommentRequest;
+import backend.zelkova.comment.dto.request.CommentDeleteRequest;
+import backend.zelkova.comment.dto.request.CommentUpdateRequest;
+import backend.zelkova.comment.dto.request.CommentWriteRequest;
 import backend.zelkova.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +25,34 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Void> addComment(@AuthenticationPrincipal AccountDetail accountDetail,
-                                           @RequestBody @Valid CommentRequest commentRequest) {
+    public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
+                                      @RequestBody @Valid CommentWriteRequest commentWriteRequest) {
 
-        commentService.write(commentRequest.getPostId(), accountDetail.getAccountId(), commentRequest.getComment());
+        commentService.write(commentWriteRequest.getPostId(), accountDetail.getAccountId(),
+                commentWriteRequest.getComment());
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
+                                       @RequestBody @Valid CommentUpdateRequest commentUpdateRequest) {
+
+        commentService.update(commentUpdateRequest.getCommentId(), accountDetail.getAccountId(),
+                commentUpdateRequest.getContent());
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
+                                       @RequestBody @Valid CommentDeleteRequest commentDeleteRequest) {
+
+        commentService.delete(commentDeleteRequest.getCommentId(), accountDetail.getAccountId());
+
+        return ResponseEntity.noContent()
                 .build();
     }
 }
