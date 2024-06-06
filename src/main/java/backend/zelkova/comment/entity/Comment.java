@@ -2,8 +2,6 @@ package backend.zelkova.comment.entity;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.base.BaseEntity;
-import backend.zelkova.exception.CustomException;
-import backend.zelkova.exception.ExceptionStatus;
 import backend.zelkova.post.entity.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,12 +46,7 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public void updateContent(Long accountId, String content) {
-
-        if (!Objects.equals(account.getId(), accountId)) {
-            throw new CustomException(ExceptionStatus.NO_PERMISSION);
-        }
-
+    public void updateContent(String content) {
         this.content = content;
     }
 }
