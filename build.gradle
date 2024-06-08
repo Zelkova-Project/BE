@@ -95,10 +95,6 @@ swaggerSources {
     }
 }
 
-tasks.withType(GenerateSwaggerUI).configureEach {
-    dependsOn "openapi3"
-}
-
 tasks.register("copySwaggerUISample") {
     doLast {
         def destinationDir
@@ -116,11 +112,15 @@ tasks.register("copySwaggerUISample") {
     }
 }
 
+tasks.withType(GenerateSwaggerUI).configureEach {
+    dependsOn "openapi3"
+    finalizedBy copySwaggerUISample
+}
+
 bootJar {
     ext.profile = (!project.hasProperty('profile') || !profile) ? 'none' : profile
 
     if ("${profile}" == 'local' || "${profile}" == 'release') {
         dependsOn generateSwaggerUISample
-        finalizedBy copySwaggerUISample
     }
 }
