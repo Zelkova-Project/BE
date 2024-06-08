@@ -2,8 +2,8 @@ package backend.zelkova.post.operator;
 
 import backend.zelkova.exception.CustomException;
 import backend.zelkova.exception.ExceptionStatus;
+import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
-import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
 import backend.zelkova.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class PostReader {
         return postRepository.retrieveAllPostPreviewResponses(pageable);
     }
 
-    public PostResponse findPostResponseByPostId(Long noticeId) {
+    public PostInfoResponse findPostResponseByPostId(Long noticeId) {
         return postRepository.retrievePostResponse(noticeId);
     }
 

@@ -1,0 +1,29 @@
+on:
+  pull_request:
+    branches: [ develop, release, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: repository 로드
+        uses: actions/checkout@v4
+
+      - name: 현재 브랜치 획득
+        uses: ./.github/actions/branch
+
+      - name: 필요 설정 로드
+        uses: ./.github/actions/load
+        with:
+          KAKAO_PROPERTIES: ${{ secrets.KAKAO_PROPERTIES }}
+          OBJECT_STORAGE_PROPERTIES: ${{ secrets.OBJECT_STORAGE_PROPERTIES }}
+          RELEASE_PROPERTIES: ${{ secrets.RELEASE_PROPERTIES }}
+          MASTER_PROPERTIES: ${{ secrets.MASTER_PROPERTIES }}
+
+      - name: 테스트
+        run: |
+          if [[ "${{ env.BRANCH }}" == "release" || "${{ env.BRANCH }}" == "master" ]]; then
+            ./gradlew test -Pprofile=${{ env.BRANCH }}
+          else
+            ./gradlew test
+          fi

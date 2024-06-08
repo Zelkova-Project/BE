@@ -17,11 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Getter
-@SoftDelete
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
@@ -46,5 +44,13 @@ public class Comment extends BaseEntity {
         this.post = post;
         this.account = account;
         this.content = content;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void breakPostRelation() {
+        this.post = null;
     }
 }

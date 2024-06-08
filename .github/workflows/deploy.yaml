@@ -1,0 +1,63 @@
+on:
+  push:
+    branches: [ release, master ]
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: repository 로드
+        uses: actions/checkout@v4
+
+      - name: 현재 브랜치 획득
+        id: branch
+        uses: ./.github/actions/branch
+
+      - name: 필요 설정 로드
+        uses: ./.github/actions/load
+        with:
+          KAKAO_PROPERTIES: ${{ secrets.KAKAO_PROPERTIES }}
+          OBJECT_STORAGE_PROPERTIES: ${{ secrets.OBJECT_STORAGE_PROPERTIES }}
+          RELEASE_PROPERTIES: ${{ secrets.RELEASE_PROPERTIES }}
+          MASTER_PROPERTIES: ${{ secrets.MASTER_PROPERTIES }}
+
+      - name: 포트 설정
+        run: |
+          if [[ "${{ env.BRANCH }}" == "master" ]]; then
+            echo "PORT=443" >> $GITHUB_ENV
+          elif [[ "${{ env.BRANCH }}" == "release" ]]; then
+            echo "PORT=8080" >> $GITHUB_ENV
+          fi
+
+      - name: 테스트 및 빌드
+        run: ./gradlew clean build -Pprofile=${{ env.BRANCH }}
+
+      - name: 빌드된 파일 이름 변경
+        run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
+
+      - name: SCP로 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          source: project.jar
+          target: /home/ubuntu/zelkova/new
+
+      - name: SSH 접속
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script_stop: true
+          scripts: |
+            rm -rf /home/ubuntu/zelkova/${{ env.BRANCH }}/current
+            mkdir /home/ubuntu/zelkova/${{ env.BRANCH }}/current
+            mv /home/ubuntu/zelkova/new/project.jar /home/ubuntu/zelkova/${{ env.BRANCH }}/current/project.jar
+            cd /home/ubuntu/zelkova/${{ env.BRANCH }}/current
+            sudo fuser -k -n tcp "$PORT" || true
+            nohup java -jar project.jar --server.port="$PORT" > ./output.log 2>&1 &
+            rm -rf /home/ubuntu/zelkova/new

@@ -55,6 +55,15 @@ dependencies {
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
     testImplementation "com.epages:restdocs-api-spec-mockmvc:${restdocsApiSpecVersion}"
     swaggerUI 'org.webjars:swagger-ui:5.15.1'
+
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // object storage
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.731'
+
+    // h2
+    testRuntimeOnly 'com.h2database:h2'
 }
 
 tasks.named('test') {
@@ -92,19 +101,26 @@ tasks.withType(GenerateSwaggerUI).configureEach {
 
 tasks.register("copySwaggerUISample") {
     doLast {
+        def destinationDir
+
+        if ("${profile}" == 'local') {
+            destinationDir = "src/main/resources/static/docs/"
+        } else if ("${profile}" == 'release') {
+            destinationDir = "${layout.buildDirectory.dir("resources/main/static/docs/").get()}"
+        }
+
         copy {
             from("${generateSwaggerUISample.outputDir}")
-            into("src/main/resources/static/docs/")
+            into(destinationDir)
         }
     }
 }
 
 bootJar {
-    dependsOn generateSwaggerUISample
-
     ext.profile = (!project.hasProperty('profile') || !profile) ? 'none' : profile
 
-    if ("${profile}" == 'local') {
+    if ("${profile}" == 'local' || "${profile}" == 'release') {
+        dependsOn generateSwaggerUISample
         finalizedBy copySwaggerUISample
     }
 }

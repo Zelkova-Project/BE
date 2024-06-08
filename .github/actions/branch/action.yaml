@@ -1,0 +1,8 @@
+name: 브랜치 설정
+description: 현재 구동중인 브랜치 정보를 가져와 설정한다
+runs:
+  using: 'composite'
+  steps:
+    - name: 브랜치 가져오기
+      run: echo "BRANCH=${{ github.base_ref || github.ref_name }}" >> $GITHUB_ENV
+      shell: bash

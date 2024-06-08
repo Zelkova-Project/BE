@@ -4,8 +4,8 @@ import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.helper.HardDeleteSupplier;
+import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
-import backend.zelkova.post.dto.response.PostResponse;
 import backend.zelkova.post.entity.Post;
 import backend.zelkova.post.model.Category;
 import backend.zelkova.post.model.Visibility;
@@ -42,7 +42,7 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        account = accountRepository.save(new Account("loginId", "password", "name", "nickname", "email"));
+        account = accountRepository.save(new Account("name", "nickname", "email"));
 
         firstPost = postRepository.save(createPost(account, "첫번째"));
         postRepository.save(createPost(account, "두번째"));
@@ -62,16 +62,16 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        PostResponse postResponse = postRepository.retrievePostResponse(middlePost.getId());
+        PostInfoResponse postInfoResponse = postRepository.retrievePostResponse(middlePost.getId());
 
         // then
-        Assertions.assertThat(postResponse.title())
+        Assertions.assertThat(postInfoResponse.title())
                 .isEqualTo("세번째");
 
-        Assertions.assertThat(postResponse.prev().title())
+        Assertions.assertThat(postInfoResponse.prev().title())
                 .isEqualTo("두번째");
 
-        Assertions.assertThat(postResponse.next().title())
+        Assertions.assertThat(postInfoResponse.next().title())
                 .isEqualTo("네번째");
     }
 
@@ -82,16 +82,16 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        PostResponse postResponse = postRepository.retrievePostResponse(firstPost.getId());
+        PostInfoResponse postInfoResponse = postRepository.retrievePostResponse(firstPost.getId());
 
         // then
-        Assertions.assertThat(postResponse.title())
+        Assertions.assertThat(postInfoResponse.title())
                 .isEqualTo("첫번째");
 
-        Assertions.assertThat(postResponse.prev())
+        Assertions.assertThat(postInfoResponse.prev())
                 .isNull();
 
-        Assertions.assertThat(postResponse.next().title())
+        Assertions.assertThat(postInfoResponse.next().title())
                 .isEqualTo("두번째");
     }
 
@@ -102,16 +102,16 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
         // given
 
         // when
-        PostResponse postResponse = postRepository.retrievePostResponse(lastPost.getId());
+        PostInfoResponse postInfoResponse = postRepository.retrievePostResponse(lastPost.getId());
 
         // then
-        Assertions.assertThat(postResponse.title())
+        Assertions.assertThat(postInfoResponse.title())
                 .isEqualTo("다섯번째");
 
-        Assertions.assertThat(postResponse.prev().title())
+        Assertions.assertThat(postInfoResponse.prev().title())
                 .isEqualTo("네번째");
 
-        Assertions.assertThat(postResponse.next())
+        Assertions.assertThat(postInfoResponse.next())
                 .isNull();
     }
 
