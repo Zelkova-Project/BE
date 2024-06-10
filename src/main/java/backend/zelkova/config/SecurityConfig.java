@@ -49,7 +49,7 @@ public class SecurityConfig {
         });
 
         http.exceptionHandling(exceptionHandleConfig -> exceptionHandleConfig.authenticationEntryPoint(
-                new HttpStatusEntryPoint(HttpStatus.FORBIDDEN)));
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
 
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests.requestMatchers("/signup", "/login/**", "/oauth2/**")
@@ -96,7 +96,7 @@ public class SecurityConfig {
 
     private AuthenticationFailureHandler authenticationFailureHandler() {
         return (request, response, exception) -> {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(LoginFailureResponse.newInstance(exception)));
         };
