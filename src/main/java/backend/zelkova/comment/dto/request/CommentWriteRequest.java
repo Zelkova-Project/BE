@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentRequest {
+public class CommentWriteRequest {
 
     @NotNull
     private Long postId;

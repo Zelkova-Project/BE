@@ -2,6 +2,7 @@ package backend.zelkova.post.entity;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.base.BaseEntity;
+import backend.zelkova.comment.entity.Comment;
 import backend.zelkova.post.model.Category;
 import backend.zelkova.post.model.Visibility;
 import jakarta.persistence.Column;
@@ -14,9 +15,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,6 +57,9 @@ public class Post extends BaseEntity {
 
     @NotBlank
     private String content;
+
+    @OneToMany(mappedBy = "post")
+    private final List<Comment> comments = new ArrayList<>();
 
     public Post(Account account, Category category, Visibility visibility, String title, String content) {
         this.account = account;

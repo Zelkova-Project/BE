@@ -53,11 +53,11 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           script_stop: true
-          scripts: |
+          script: |
             rm -rf /home/ubuntu/zelkova/${{ env.BRANCH }}/current
-            mkdir /home/ubuntu/zelkova/${{ env.BRANCH }}/current
+            mkdir -p /home/ubuntu/zelkova/${{ env.BRANCH }}/current
             mv /home/ubuntu/zelkova/new/project.jar /home/ubuntu/zelkova/${{ env.BRANCH }}/current/project.jar
             cd /home/ubuntu/zelkova/${{ env.BRANCH }}/current
-            sudo fuser -k -n tcp "$PORT" || true
-            nohup java -jar project.jar --server.port="$PORT" > ./output.log 2>&1 &
+            sudo fuser -k -n tcp ${{ env.PORT }} || true
+            nohup java -jar project.jar --server.port=${{ env.PORT }} --spring.profiles.active=${{ env.BRANCH }} > ./output.log 2>&1 &
             rm -rf /home/ubuntu/zelkova/new

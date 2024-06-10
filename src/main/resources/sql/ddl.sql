@@ -138,7 +138,7 @@ CREATE TABLE `posts`
 CREATE TABLE `comments`
 (
     `comment_id` BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `post_id`    BIGINT   NOT NULL,
+    `post_id`    BIGINT   NULL,
     `account_id` BIGINT   NOT NULL,
     `content`    TEXT     NOT NULL,
     `created_at` DATETIME NOT NULL,

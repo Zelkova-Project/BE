@@ -45,4 +45,12 @@ public class Comment extends BaseEntity {
         this.account = account;
         this.content = content;
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void breakPostRelation() {
+        this.post = null;
+    }
 }

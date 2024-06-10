@@ -7,6 +7,9 @@ import backend.zelkova.account.entity.SocialAccount;
 import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.account.repository.NormalAccountRepository;
 import backend.zelkova.account.repository.SocialAccountRepository;
+import backend.zelkova.exception.CustomException;
+import backend.zelkova.exception.ExceptionStatus;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,6 +27,12 @@ public class AccountSupplier {
     private final PasswordEncoder passwordEncoder;
 
     public NormalAccount supply(String loginId, String password, String name, String nickname, String email) {
+        Optional<NormalAccount> optNormalAccount = normalAccountRepository.findByLoginId(loginId);
+
+        if (optNormalAccount.isPresent()) {
+            throw new CustomException(ExceptionStatus.EXIST_LOGIN_ID);
+        }
+
         String encodedPassword = passwordEncoder.encode(password);
         Account account = createAccount(name, nickname, email);
         NormalAccount normalAccount = new NormalAccount(account, loginId, encodedPassword);
