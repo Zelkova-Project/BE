@@ -48,8 +48,11 @@ public class SecurityConfig {
             oauth2Config.failureHandler(authenticationFailureHandler());
         });
 
-        http.exceptionHandling(exceptionHandleConfig -> exceptionHandleConfig.authenticationEntryPoint(
-                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        http.exceptionHandling(exceptionHandleConfig -> {
+            exceptionHandleConfig.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+            exceptionHandleConfig.accessDeniedHandler((request, response, accessDeniedException) ->
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND));
+        });
 
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests.requestMatchers("/signup", "/login/**", "/oauth2/**")
