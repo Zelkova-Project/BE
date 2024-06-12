@@ -69,7 +69,7 @@ class LoginTest extends ControllerTestSupport {
                                 .param("loginId", "loginId")
                                 .param("password", "password")
                 )
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
