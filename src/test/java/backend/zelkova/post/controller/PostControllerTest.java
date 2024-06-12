@@ -13,6 +13,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -196,6 +198,7 @@ class PostControllerTest extends ControllerTestSupport {
                                 .param("visibility", Visibility.PUBLIC.name())
                                 .param("title", "title")
                                 .param("content", "content")
+                                .with(csrf().asHeader())
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().exists("location"))
@@ -238,8 +241,10 @@ class PostControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.patch("/posts")
                                 .content(objectMapper.writeValueAsString(postUpdateRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isNoContent())
+                .andDo(print())
                 .andDo(document("updatePost",
                         resource(ResourceSnippetParameters.builder()
                                 .summary("글 수정")
@@ -279,6 +284,7 @@ class PostControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.patch("/posts/move")
                                 .content(objectMapper.writeValueAsString(postMoveRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isNoContent())
                 .andDo(document("movePost",
@@ -312,6 +318,7 @@ class PostControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.delete("/posts")
                                 .content(objectMapper.writeValueAsString(postDeleteRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isNoContent())
                 .andDo(document("deletePost",
