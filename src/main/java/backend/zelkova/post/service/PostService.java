@@ -54,7 +54,7 @@ public class PostService {
         Post post = postSupplier.supply(account, category, visibility, title, content);
 
         Long postId = post.getId();
-        attachments.forEach(attachment -> attachmentManager.upload(postId, attachment));
+        attachmentManager.uploadAttachments(postId, attachments);
 
         return postId;
     }
@@ -81,8 +81,8 @@ public class PostService {
             return;
         }
 
-        deleteAttachmentKeys.forEach(attachmentManager::delete);
-        newAttachments.forEach(attachment -> attachmentManager.upload(post.getId(), attachment));
+        attachmentManager.deleteAttachments(deleteAttachmentKeys);
+        attachmentManager.uploadAttachments(post.getId(), newAttachments);
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
