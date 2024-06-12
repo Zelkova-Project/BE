@@ -20,6 +20,7 @@ import java.util.StringJoiner;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
@@ -32,7 +33,15 @@ public class AttachmentManager {
     private final ObjectStorageProperty objectStorageProperty;
     private final AmazonS3 objectStorage;
 
-    public void upload(Long postId, MultipartFile multipartFile) {
+    public void uploadAttachments(Long postId, List<MultipartFile> attachments) {
+        if (CollectionUtils.isEmpty(attachments)) {
+            return;
+        }
+
+        attachments.forEach(attachment -> this.upload(postId, attachment));
+    }
+
+    private void upload(Long postId, MultipartFile multipartFile) {
 
         if (Objects.isNull(multipartFile) || multipartFile.isEmpty()) {
             return;
@@ -97,7 +106,15 @@ public class AttachmentManager {
         return url.toString();
     }
 
-    public void delete(String key) {
+    public void deleteAttachments(List<String> keys) {
+        if (CollectionUtils.isEmpty(keys)) {
+            return;
+        }
+
+        keys.forEach(this::delete);
+    }
+
+    private void delete(String key) {
         objectStorage.deleteObject(objectStorageProperty.getBucketName(), key);
     }
 
