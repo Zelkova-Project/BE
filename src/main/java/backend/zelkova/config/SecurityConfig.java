@@ -1,6 +1,7 @@
 package backend.zelkova.config;
 
 import backend.zelkova.account.dto.response.LoginFailureResponse;
+import backend.zelkova.filter.CsrfCookieFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,9 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -32,7 +36,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(httpSecurityCsrfConfigurer -> {
+            httpSecurityCsrfConfigurer.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler());
+            httpSecurityCsrfConfigurer.ignoringRequestMatchers("/signup", "/login/**", "/logout");
+            httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        });
+
+        http.cors(AbstractHttpConfigurer::disable);
+
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.formLogin(formConfig -> {
@@ -47,6 +58,13 @@ public class SecurityConfig {
             oauth2Config.successHandler(authenticationSuccessHandler());
             oauth2Config.failureHandler(authenticationFailureHandler());
         });
+
+        http.exceptionHandling(exceptionHandleConfig -> {
+            exceptionHandleConfig.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+            exceptionHandleConfig.accessDeniedHandler((request, response, accessDeniedException) ->
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND));
+        });
+        http.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
 
         http.exceptionHandling(exceptionHandleConfig -> exceptionHandleConfig.authenticationEntryPoint(
                 new HttpStatusEntryPoint(HttpStatus.FORBIDDEN)));
@@ -96,7 +114,7 @@ public class SecurityConfig {
 
     private AuthenticationFailureHandler authenticationFailureHandler() {
         return (request, response, exception) -> {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(LoginFailureResponse.newInstance(exception)));
         };
