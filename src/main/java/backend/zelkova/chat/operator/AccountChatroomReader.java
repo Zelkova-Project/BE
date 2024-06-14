@@ -2,7 +2,6 @@ package backend.zelkova.chat.operator;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.chat.dto.response.ChatroomResponse;
-import backend.zelkova.chat.entity.Chatroom;
 import backend.zelkova.chat.entity.ChatroomAccount;
 import backend.zelkova.chat.repository.ChatroomAccountRepository;
 import java.util.List;
@@ -27,11 +26,6 @@ public class AccountChatroomReader {
     }
 
     public List<ChatroomResponse> findAccountChatrooms(Long accountId) {
-        return chatroomAccountRepository.findAllById_AccountId(accountId)
-                .stream()
-                .map(ChatroomAccount::getChatroom)
-                .map(Chatroom::getId)
-                .map(ChatroomResponse::new)
-                .toList();
+        return chatroomAccountRepository.retrieveAccountChatroomsWithLastChat(accountId);
     }
 }

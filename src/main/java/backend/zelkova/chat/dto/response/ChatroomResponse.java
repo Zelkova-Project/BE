@@ -1,4 +1,10 @@
 package backend.zelkova.chat.dto.response;
 
-public record ChatroomResponse(Long chatroomId) {
+import com.querydsl.core.annotations.QueryProjection;
+
+public record ChatroomResponse(Long chatroomId, String lastMessage) {
+
+    @QueryProjection
+    public ChatroomResponse {
+    }
 }
