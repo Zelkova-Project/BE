@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import backend.zelkova.ControllerTestSupport;
@@ -43,6 +44,7 @@ class AdminControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.post("/roles")
                                 .content(objectMapper.writeValueAsString(grantRoleRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isOk())
                 .andDo(document("grantRole",
@@ -77,6 +79,7 @@ class AdminControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.delete("/roles")
                                 .content(objectMapper.writeValueAsString(removeRoleRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isNoContent())
                 .andDo(document("deleteRole",

@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import backend.zelkova.ControllerTestSupport;
@@ -42,6 +43,7 @@ class CommentControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.post("/comments")
                                 .content(objectMapper.writeValueAsString(commentWriteRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isCreated())
                 .andDo(document("writeComment",
@@ -75,6 +77,7 @@ class CommentControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.patch("/comments/update")
                                 .content(objectMapper.writeValueAsString(commentUpdateRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isNoContent())
                 .andDo(document("updateComment",
@@ -107,6 +110,7 @@ class CommentControllerTest extends ControllerTestSupport {
                         RestDocumentationRequestBuilders.delete("/comments/delete")
                                 .content(objectMapper.writeValueAsString(commentDeleteRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf())
                 )
                 .andExpect(status().isNoContent())
                 .andDo(document("deleteComment",
