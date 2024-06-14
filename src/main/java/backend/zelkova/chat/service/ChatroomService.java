@@ -8,7 +8,7 @@ import backend.zelkova.chat.entity.Chatroom;
 import backend.zelkova.chat.operator.AccountChatroomReader;
 import backend.zelkova.chat.operator.ChatPublisher;
 import backend.zelkova.chat.operator.ChatSupplier;
-import backend.zelkova.chat.operator.ChatroomReader;
+import backend.zelkova.chat.operator.ChatroomManager;
 import backend.zelkova.exception.CustomException;
 import backend.zelkova.exception.ExceptionStatus;
 import java.util.List;
@@ -24,20 +24,21 @@ public class ChatroomService {
 
     private final AccountChatroomReader accountChatroomReader;
     private final AccountReader accountReader;
-    private final ChatroomReader chatroomReader;
     private final ChatSupplier chatSupplier;
     private final ChatPublisher chatPublisher;
+    private final ChatroomManager chatroomManager;
 
     public void sendMessage(Long chatroomId, Long senderId, Long receiverId, String message) {
+        Chatroom chatroom = chatroomManager.getOrCreate(chatroomId, senderId, receiverId);
+
         Set<Account> accountsInChatroom = accountChatroomReader.findAccountsInChatroom(chatroomId);
 
         if (!isParticipant(accountsInChatroom, senderId)) {
             throw new CustomException(ExceptionStatus.NOT_PARTICIPANT_ACCOUNT);
         }
 
-        Chatroom chatroom = chatroomReader.getReferenceById(chatroomId);
-        Account account = accountReader.getReferenceById(senderId);
-        Chat chat = chatSupplier.supply(chatroom, account, message);
+        Account sender = accountReader.getReferenceById(senderId);
+        Chat chat = chatSupplier.supply(chatroom, sender, message);
 
         chatPublisher.publish(accountsInChatroom, chat);
     }
