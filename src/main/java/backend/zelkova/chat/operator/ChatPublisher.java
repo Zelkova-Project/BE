@@ -1,7 +1,7 @@
 package backend.zelkova.chat.operator;
 
 import backend.zelkova.account.entity.Account;
-import backend.zelkova.chat.dto.message.ChatMessage;
+import backend.zelkova.chat.dto.message.ChatMessageRequest;
 import backend.zelkova.chat.entity.Chat;
 import backend.zelkova.chat.entity.Chatroom;
 import backend.zelkova.chat.model.MessageDestination;
@@ -20,8 +20,7 @@ public class ChatPublisher {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public void publish(Set<Account> accountsInChatroom, Chat chat) {
-        Chatroom chatroom = chat.getChatroom();
-        sendMessage(chatroom, accountsInChatroom, chat.getAccount(), chat.getContent());
+        sendMessage(chat.getChatroom(), accountsInChatroom, chat.getAccount(), chat.getContent());
     }
 
     private void sendMessage(Chatroom chatroom, Set<Account> accountsInChatroom, Account account, String message) {
@@ -30,7 +29,7 @@ public class ChatPublisher {
     }
 
     private void sendMessageEachAccount(Long chatroomId, Account targetAccount, Long publisherId, String message) {
-        simpMessagingTemplate.convertAndSendToUser(targetAccount.getLoginId(), MessageDestination.MESSAGE,
-                new ChatMessage(chatroomId, publisherId, message));
+        simpMessagingTemplate.convertAndSendToUser(targetAccount.getId().toString(), MessageDestination.MESSAGE,
+                new ChatMessageRequest(chatroomId, publisherId, message));
     }
 }

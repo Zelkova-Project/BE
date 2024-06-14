@@ -21,6 +21,4 @@ public class Chatroom extends BaseEntity {
     @Column(name = "chatroom_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String name;
 }
