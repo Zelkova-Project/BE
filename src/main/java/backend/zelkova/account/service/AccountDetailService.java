@@ -34,7 +34,7 @@ public class AccountDetailService extends DefaultOAuth2UserService implements Us
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
-        NormalAccount normalAccount = accountReader.findAccountByLoginId(loginId);
+        NormalAccount normalAccount = accountReader.findNormalAccountByLoginId(loginId);
         Set<Role> roles = accountRoleReader.findRolesByAccountId(normalAccount.getId());
         return accountDetailSupplier.supply(normalAccount, roles);
     }

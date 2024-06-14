@@ -64,6 +64,10 @@ dependencies {
 
     // h2
     testRuntimeOnly 'com.h2database:h2'
+
+    // webSocketSecurity
+    implementation 'org.springframework.security:spring-security-messaging'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
