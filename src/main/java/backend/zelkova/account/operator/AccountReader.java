@@ -2,6 +2,7 @@ package backend.zelkova.account.operator;
 
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.entity.NormalAccount;
+import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.account.repository.NormalAccountRepository;
 import backend.zelkova.exception.CustomException;
 import backend.zelkova.exception.ExceptionStatus;
@@ -15,16 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AccountReader {
 
+    private final AccountRepository accountRepository;
     private final NormalAccountRepository normalAccountRepository;
 
     public Account findAccountById(Long accountId) {
-        NormalAccount normalAccount = normalAccountRepository.findById(accountId)
+        return accountRepository.findById(accountId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.NOTFOUND));
-        return normalAccount.getAccount();
     }
 
-    public NormalAccount findAccountByLoginId(String loginId) {
+    public NormalAccount findNormalAccountByLoginId(String loginId) {
         return normalAccountRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException(loginId + "을 찾을 수 없음"));
+    }
+
+    public Account getReferenceById(Long accountId) {
+        return accountRepository.getReferenceById(accountId);
     }
 }
