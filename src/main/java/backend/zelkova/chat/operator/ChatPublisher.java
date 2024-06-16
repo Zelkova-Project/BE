@@ -1,11 +1,10 @@
 package backend.zelkova.chat.operator;
 
 import backend.zelkova.account.entity.Account;
-import backend.zelkova.chat.dto.message.ChatMessageRequest;
+import backend.zelkova.chat.dto.response.ChatResponse;
 import backend.zelkova.chat.entity.Chat;
-import backend.zelkova.chat.entity.Chatroom;
 import backend.zelkova.chat.model.MessageDestination;
-import java.util.Set;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -17,19 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.MANDATORY)
 public class ChatPublisher {
 
+    private final ChatSupplier chatSupplier;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public void publish(Set<Account> accountsInChatroom, Chat chat) {
-        sendMessage(chat.getChatroom(), accountsInChatroom, chat.getAccount(), chat.getContent());
+    public void publish(Account sender, Account receiver, String content) {
+        Chat chat = chatSupplier.supply(sender, receiver, content);
+        sendMessage(chat.getId(), chat.getContent(), chat.getSender().getId(), chat.getReceiver().getId());
     }
 
-    private void sendMessage(Chatroom chatroom, Set<Account> accountsInChatroom, Account account, String message) {
-        accountsInChatroom.forEach(
-                targetAccount -> sendMessageEachAccount(chatroom.getId(), targetAccount, account.getId(), message));
+    private void sendMessage(Long chatId, String content, Long... accountIds) {
+        Arrays.stream(accountIds).forEach(
+                accountId -> sendMessageEachAccount(accountId, chatId, content));
     }
 
-    private void sendMessageEachAccount(Long chatroomId, Account targetAccount, Long publisherId, String message) {
-        simpMessagingTemplate.convertAndSendToUser(targetAccount.getId().toString(), MessageDestination.MESSAGE,
-                new ChatMessageRequest(chatroomId, publisherId, message));
+    private void sendMessageEachAccount(Long accountId, Long chatId, String content) {
+        simpMessagingTemplate.convertAndSendToUser(accountId.toString(), MessageDestination.MESSAGE,
+                new ChatResponse(chatId, content));
     }
 }

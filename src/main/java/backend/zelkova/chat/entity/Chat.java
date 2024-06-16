@@ -26,18 +26,18 @@ public class Chat extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "chatroom_id")
-    private Chatroom chatroom;
+    @JoinColumn(name = "sender_id")
+    private Account sender;
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "receiver_id")
+    private Account receiver;
 
     private String content;
 
-    public Chat(Chatroom chatroom, Account account, String content) {
-        this.chatroom = chatroom;
-        this.account = account;
+    public Chat(Account sender, Account receiver, String content) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.content = content;
     }
 }
