@@ -2,7 +2,6 @@ package backend.zelkova.post.service;
 
 import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
-import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.comment.entity.Comment;
 import backend.zelkova.comment.model.PostCommentResponse;
@@ -17,9 +16,7 @@ import backend.zelkova.post.model.Visibility;
 import backend.zelkova.post.repository.PostRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +91,7 @@ class PostServiceTest extends IntegrationTestSupport {
         // given
 
         // when
-        postService.delete(new AccountDetail(account.getId(), "name", Set.of(), Map.of()), post.getId());
+        postService.delete(account.getId(), post.getId());
 
         // then
         List<Comment> targetComments = comments.stream()
