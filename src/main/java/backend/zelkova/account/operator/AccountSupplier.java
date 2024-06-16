@@ -4,7 +4,6 @@ import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.entity.NormalAccount;
 import backend.zelkova.account.entity.Social;
 import backend.zelkova.account.entity.SocialAccount;
-import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.account.repository.NormalAccountRepository;
 import backend.zelkova.account.repository.SocialAccountRepository;
 import backend.zelkova.exception.CustomException;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.MANDATORY)
 public class AccountSupplier {
 
-    private final AccountRepository accountRepository;
     private final NormalAccountRepository normalAccountRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final PasswordEncoder passwordEncoder;
@@ -34,21 +32,14 @@ public class AccountSupplier {
         }
 
         String encodedPassword = passwordEncoder.encode(password);
-        Account account = createAccount(name, nickname, email);
-        NormalAccount normalAccount = new NormalAccount(account, loginId, encodedPassword);
+        NormalAccount normalAccount = new NormalAccount(new Account(name, nickname, email), loginId, encodedPassword);
         normalAccountRepository.save(normalAccount);
 
         return normalAccount;
     }
 
-    private Account createAccount(String name, String nickname, String email) {
-        Account account = new Account(name, nickname, email);
-        return accountRepository.save(account);
-    }
-
     public SocialAccount supply(Social social, String socialId, String name, String nickname, String email) {
-        Account account = createAccount(name, nickname, email);
-        SocialAccount socialAccount = new SocialAccount(account, social, socialId);
+        SocialAccount socialAccount = new SocialAccount(new Account(name, nickname, email), social, socialId);
         socialAccountRepository.save(socialAccount);
 
         return socialAccount;
