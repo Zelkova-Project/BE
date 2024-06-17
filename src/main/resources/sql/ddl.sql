@@ -61,40 +61,17 @@ CREATE TABLE `account_roles`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `chatrooms`
-(
-    `chatroom_id` BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `created_at`  DATETIME NOT NULL,
-    `updated_at`  DATETIME NOT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
-CREATE TABLE `chatroom_accounts`
-(
-    `account_id`  BIGINT   NOT NULL,
-    `chatroom_id` BIGINT   NOT NULL,
-    `created_at`  DATETIME NOT NULL,
-    `updated_at`  DATETIME NOT NULL,
-    PRIMARY KEY (`account_id`, `chatroom_id`),
-    INDEX `idx_chatroom_id` (`chatroom_id`),
-    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
-    FOREIGN KEY (`chatroom_id`) REFERENCES `chatrooms` (`chatroom_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
-
 CREATE TABLE `chats`
 (
     `chat_id`     BIGINT   NOT NULL AUTO_INCREMENT,
-    `chatroom_id` BIGINT   NOT NULL,
-    `account_id`  BIGINT   NOT NULL,
+    `sender_id`   BIGINT   NOT NULL,
+    `receiver_id` BIGINT   NOT NULL,
     `content`     TEXT     NOT NULL,
     `created_at`  DATETIME NOT NULL,
     `updated_at`  DATETIME NOT NULL,
     PRIMARY KEY (`chat_id`, `created_at`),
-    INDEX `idx_chatroom_id` (`chatroom_id`),
-    INDEX `idx_account_id` (`account_id`)
+    INDEX `idx_sender_id` (`sender_id`),
+    INDEX `idx_receiver_id` (`receiver_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
@@ -140,7 +117,7 @@ CREATE TABLE `posts`
 CREATE TABLE `comments`
 (
     `comment_id` BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `post_id`    BIGINT   NOT NULL,
+    `post_id`    BIGINT   NULL,
     `account_id` BIGINT   NOT NULL,
     `content`    TEXT     NOT NULL,
     `created_at` DATETIME NOT NULL,

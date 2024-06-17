@@ -14,6 +14,7 @@ public class AccountDetail implements UserDetails, OAuth2User {
 
     @Getter
     private final Long accountId;
+    @Getter
     private final String loginId;
     private final String password;
     private final String name;
@@ -66,7 +67,7 @@ public class AccountDetail implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
-        return loginId;
+        return accountId.toString();
     }
 
     @Override

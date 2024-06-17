@@ -46,7 +46,7 @@ public class PostController {
     public ResponseEntity<Void> write(@AuthenticationPrincipal AccountDetail accountDetail,
                                       @ModelAttribute @Valid PostUploadRequest postUploadRequest) {
 
-        Long postId = postService.write(accountDetail, postUploadRequest.getCategory(),
+        Long postId = postService.write(accountDetail.getAccountId(), postUploadRequest.getCategory(),
                 postUploadRequest.getVisibility(), postUploadRequest.getTitle(), postUploadRequest.getContent(),
                 postUploadRequest.getFiles());
 
@@ -58,8 +58,8 @@ public class PostController {
     public ResponseEntity<Void> update(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostUpdateRequest postUpdateRequest) {
 
-        postService.update(accountDetail, postUpdateRequest.getPostId(), postUpdateRequest.getVisibility(),
-                postUpdateRequest.getTitle(), postUpdateRequest.getContent(),
+        postService.update(accountDetail.getAccountId(), postUpdateRequest.getPostId(),
+                postUpdateRequest.getVisibility(), postUpdateRequest.getTitle(), postUpdateRequest.getContent(),
                 postUpdateRequest.getDeleteAttachmentKeys(), postUpdateRequest.getNewAttachments());
 
         return ResponseEntity.noContent()
@@ -70,7 +70,7 @@ public class PostController {
     public ResponseEntity<Void> move(@AuthenticationPrincipal AccountDetail accountDetail,
                                      @RequestBody @Valid PostMoveRequest postMoveRequest) {
 
-        postService.move(accountDetail, postMoveRequest.getPostId(), postMoveRequest.getCategory());
+        postService.move(accountDetail.getAccountId(), postMoveRequest.getPostId(), postMoveRequest.getCategory());
 
         return ResponseEntity.noContent()
                 .build();
@@ -80,7 +80,7 @@ public class PostController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AccountDetail accountDetail,
                                        @RequestBody @Valid PostDeleteRequest postDeleteRequest) {
 
-        postService.delete(accountDetail, postDeleteRequest.getPostId());
+        postService.delete(accountDetail.getAccountId(), postDeleteRequest.getPostId());
 
         return ResponseEntity.noContent()
                 .build();
