@@ -1,8 +1,11 @@
 package backend.zelkova.post.service;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
-import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.comment.entity.Comment;
 import backend.zelkova.comment.model.PostCommentResponse;
@@ -15,11 +18,11 @@ import backend.zelkova.post.entity.Post;
 import backend.zelkova.post.model.Category;
 import backend.zelkova.post.model.Visibility;
 import backend.zelkova.post.repository.PostRepository;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +51,9 @@ class PostServiceTest extends IntegrationTestSupport {
     @Autowired
     TransactionWrapper transactionWrapper;
 
+    @Autowired
+    AmazonS3 objectStorage;
+
     Account account;
 
     Post post;
@@ -74,6 +80,14 @@ class PostServiceTest extends IntegrationTestSupport {
     @DisplayName("글 조회")
     void getPost() throws Exception {
 
+        // given
+        ListObjectsV2Result listObjectsV2Result = mock(ListObjectsV2Result.class);
+        given(listObjectsV2Result.getObjectSummaries())
+                .willReturn(List.of());
+
+        given(objectStorage.listObjectsV2(anyString(), anyString()))
+                .willReturn(listObjectsV2Result);
+
         // when
         PostResponse postResponse = postService.getPost(post.getId());
 
@@ -94,7 +108,7 @@ class PostServiceTest extends IntegrationTestSupport {
         // given
 
         // when
-        postService.delete(new AccountDetail(account.getId(), "name", Set.of(), Map.of()), post.getId());
+        postService.delete(account.getId(), post.getId());
 
         // then
         List<Comment> targetComments = comments.stream()

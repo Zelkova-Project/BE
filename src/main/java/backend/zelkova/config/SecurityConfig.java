@@ -43,7 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(httpSecurityCsrfConfigurer -> {
             httpSecurityCsrfConfigurer.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler());
-            httpSecurityCsrfConfigurer.ignoringRequestMatchers("/signup", "/login/**", "/logout");
+            httpSecurityCsrfConfigurer.ignoringRequestMatchers("/signup", "/login/**", "/logout", "/ws-zelkova/**");
             httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         });
 
@@ -80,9 +80,6 @@ public class SecurityConfig {
             authorizeRequests.requestMatchers("/docs/**")
                     .hasAnyRole("ADMIN", "MANAGER");
 
-            authorizeRequests.requestMatchers("/ws-zelkova/**")
-                    .permitAll();
-
             authorizeRequests.anyRequest()
                     .authenticated();
         });
@@ -99,7 +96,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder,

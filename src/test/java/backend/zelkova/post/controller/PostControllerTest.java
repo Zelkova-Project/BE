@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import backend.zelkova.ControllerTestSupport;
 import backend.zelkova.comment.model.PostCommentResponse;
+import backend.zelkova.helper.WithAccount;
 import backend.zelkova.post.dto.request.PostDeleteRequest;
 import backend.zelkova.post.dto.request.PostMoveRequest;
 import backend.zelkova.post.dto.request.PostUpdateRequest;
@@ -38,12 +39,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.security.test.context.support.WithMockUser;
 
 class PostControllerTest extends ControllerTestSupport {
 
     @Test
-    @WithMockUser
+    @WithAccount
     @DisplayName("글 목록 조회")
     void getPosts() throws Exception {
 
@@ -108,7 +108,7 @@ class PostControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @WithMockUser
+    @WithAccount
     @DisplayName("글 조회")
     void getPost() throws Exception {
 
@@ -182,7 +182,7 @@ class PostControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @WithMockUser
+    @WithAccount
     @DisplayName("글 작성")
     void writePost() throws Exception {
 
@@ -220,7 +220,7 @@ class PostControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @WithMockUser
+    @WithAccount
     @DisplayName("글 수정")
     void updatePost() throws Exception {
 
@@ -265,7 +265,7 @@ class PostControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @WithMockUser
+    @WithAccount
     @DisplayName("글 카테고리 이동")
     void movePost() throws Exception {
 
@@ -300,7 +300,7 @@ class PostControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @WithMockUser
+    @WithAccount
     @DisplayName("글 삭제")
     void deletePost() throws Exception {
 

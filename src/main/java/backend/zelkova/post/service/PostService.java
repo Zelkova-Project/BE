@@ -1,7 +1,6 @@
 package backend.zelkova.post.service;
 
 import backend.zelkova.account.entity.Account;
-import backend.zelkova.account.model.AccountDetail;
 import backend.zelkova.account.operator.AccountReader;
 import backend.zelkova.attachment.dto.response.AttachmentResponse;
 import backend.zelkova.attachment.operator.AttachmentManager;
@@ -41,10 +40,8 @@ public class PostService {
     private final AttachmentManager attachmentManager;
 
     @Transactional
-    public Long write(AccountDetail accountDetail, Category category, Visibility visibility, String title,
+    public Long write(Long accountId, Category category, Visibility visibility, String title,
                       String content, List<MultipartFile> attachments) {
-
-        Long accountId = accountDetail.getAccountId();
 
         if (!postPermissionValidator.hasPermission(category, accountId)) {
             throw new CustomException(ExceptionStatus.NO_PERMISSION);
@@ -71,12 +68,12 @@ public class PostService {
     }
 
     @Transactional
-    public void update(AccountDetail accountDetail, Long noticeId, Visibility visibility, String title,
+    public void update(Long accountId, Long noticeId, Visibility visibility, String title,
                        String content, List<String> deleteAttachmentKeys, List<MultipartFile> newAttachments) {
 
         Post post = postReader.findById(noticeId);
 
-        if (postPermissionValidator.isOwner(post, accountDetail.getAccountId())) {
+        if (postPermissionValidator.isOwner(post, accountId)) {
             post.update(visibility, title, content);
             return;
         }
@@ -88,11 +85,11 @@ public class PostService {
     }
 
     @Transactional
-    public void move(AccountDetail accountDetail, Long noticeId, Category category) {
+    public void move(Long accountId, Long noticeId, Category category) {
 
         Post post = postReader.findById(noticeId);
 
-        if (postPermissionValidator.hasPermission(post, accountDetail.getAccountId())) {
+        if (postPermissionValidator.hasPermission(post, accountId)) {
             post.move(category);
             return;
         }
@@ -101,10 +98,10 @@ public class PostService {
     }
 
     @Transactional
-    public void delete(AccountDetail accountDetail, Long postId) {
+    public void delete(Long accountId, Long postId) {
         Post post = postReader.findById(postId);
 
-        if (postPermissionValidator.hasPermission(post, accountDetail.getAccountId())) {
+        if (postPermissionValidator.hasPermission(post, accountId)) {
             postManager.delete(post);
             return;
         }
