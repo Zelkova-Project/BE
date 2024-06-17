@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 @SpringBootTest
-@Import({HardDeleteSupplier.class, TransactionWrapper.class})
+@Import({HardDeleteSupplier.class, TransactionWrapper.class, TestConfig.class})
 public abstract class IntegrationTestSupport {
 
 }

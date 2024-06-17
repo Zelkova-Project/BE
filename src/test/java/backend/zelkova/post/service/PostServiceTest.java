@@ -1,5 +1,9 @@
 package backend.zelkova.post.service;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
@@ -14,6 +18,8 @@ import backend.zelkova.post.entity.Post;
 import backend.zelkova.post.model.Category;
 import backend.zelkova.post.model.Visibility;
 import backend.zelkova.post.repository.PostRepository;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +51,9 @@ class PostServiceTest extends IntegrationTestSupport {
     @Autowired
     TransactionWrapper transactionWrapper;
 
+    @Autowired
+    AmazonS3 objectStorage;
+
     Account account;
 
     Post post;
@@ -70,6 +79,14 @@ class PostServiceTest extends IntegrationTestSupport {
     @Transactional
     @DisplayName("글 조회")
     void getPost() throws Exception {
+
+        // given
+        ListObjectsV2Result listObjectsV2Result = mock(ListObjectsV2Result.class);
+        given(listObjectsV2Result.getObjectSummaries())
+                .willReturn(List.of());
+
+        given(objectStorage.listObjectsV2(anyString(), anyString()))
+                .willReturn(listObjectsV2Result);
 
         // when
         PostResponse postResponse = postService.getPost(post.getId());
