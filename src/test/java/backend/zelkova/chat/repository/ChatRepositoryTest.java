@@ -5,9 +5,11 @@ import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
 import backend.zelkova.chat.dto.response.LastChatResponse;
 import backend.zelkova.chat.entity.Chat;
+import backend.zelkova.helper.HardDeleteSupplier;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,14 @@ class ChatRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    HardDeleteSupplier hardDeleteSupplier;
+
+    @AfterEach
+    void tearDown() {
+        hardDeleteSupplier.hardDelete(Chat.class, Account.class);
+    }
 
     @Test
     @DisplayName("마지막 채팅 기록들 불러오기")
