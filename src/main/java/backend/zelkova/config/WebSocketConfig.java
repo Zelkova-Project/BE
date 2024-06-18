@@ -40,7 +40,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new AccountDetailWebsocketArgumentResolver());
+        argumentResolvers.add(accountDetailWebsocketArgumentResolver());
     }
 
     @Bean
@@ -48,12 +48,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return new HttpSessionHandshakeInterceptor();
     }
 
+    @Bean
+    HandlerMethodArgumentResolver accountDetailWebsocketArgumentResolver() {
+        return new AccountDetailWebsocketArgumentResolver();
+    }
+
     static class AccountDetailWebsocketArgumentResolver implements HandlerMethodArgumentResolver {
+
         @Override
         public boolean supportsParameter(MethodParameter parameter) {
-            MethodParameter nestedParameter = parameter.nestedIfOptional();
-            Class<?> paramType = nestedParameter.getNestedParameterType();
-            return AccountDetail.class.isAssignableFrom(paramType);
+            return AccountDetail.class.isAssignableFrom(parameter.getParameterType());
         }
 
         @Override
