@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 @Slf4j
@@ -21,13 +20,13 @@ public class ChatController {
     private final ChatService chatService;
 
     @SubscribeMapping("/user/queue/message")
-    public List<LastChatResponse> noticeChatroomInfo(@AuthenticationPrincipal AccountDetail accountDetail) {
+    public List<LastChatResponse> noticeChatroomInfo(AccountDetail accountDetail) {
         log.trace("구독");
         return chatService.findAccountChats(accountDetail.getAccountId());
     }
 
     @MessageMapping("/message")
-    public void message(@AuthenticationPrincipal AccountDetail accountDetail, @Payload ChatRequest payload) {
+    public void message(AccountDetail accountDetail, @Payload ChatRequest payload) {
         log.trace("메시지 발신");
         chatService.sendChat(accountDetail.getAccountId(), payload.receiverId(), payload.message());
     }

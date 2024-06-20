@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "objectstorage.iwinv")

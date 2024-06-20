@@ -4,7 +4,7 @@ import backend.zelkova.account.entity.Account;
 import backend.zelkova.chat.dto.response.ChatResponse;
 import backend.zelkova.chat.entity.Chat;
 import backend.zelkova.chat.model.MessageDestination;
-import java.util.Arrays;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class ChatPublisher {
     }
 
     private void sendMessage(Long chatId, String content, Long... accountIds) {
-        Arrays.stream(accountIds).forEach(
+        Set.of(accountIds).forEach(
                 accountId -> sendMessageEachAccount(accountId, chatId, content));
     }
 
