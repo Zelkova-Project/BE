@@ -1,10 +1,10 @@
 package backend.zelkova.config;
 
 import backend.zelkova.account.dto.response.LoginFailureResponse;
-import backend.zelkova.filter.CsrfCookieFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -67,7 +67,6 @@ public class SecurityConfig {
             exceptionHandleConfig.accessDeniedHandler((request, response, accessDeniedException) ->
                     response.sendError(HttpServletResponse.SC_NOT_FOUND));
         });
-        http.addFilterAfter(new CsrfCookieFilter(), CsrfFilter.class);
 
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests.requestMatchers("/signup", "/login/**", "/oauth2/**")
@@ -115,7 +114,15 @@ public class SecurityConfig {
     }
 
     private AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return (request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK);
+        return (request, response, authentication) -> {
+            CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+
+            if (Objects.nonNull(csrfToken.getHeaderName())) {
+                response.setHeader(csrfToken.getHeaderName(), csrfToken.getToken());
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+        };
     }
 
     private LogoutSuccessHandler logoutSuccessHandler() {
