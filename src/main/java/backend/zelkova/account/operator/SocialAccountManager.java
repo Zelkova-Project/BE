@@ -27,8 +27,8 @@ public class SocialAccountManager {
         LinkedHashMap<String, String> properties = (LinkedHashMap<String, String>) attributes.get("properties");
         LinkedHashMap<String, String> kakaoAccount = (LinkedHashMap<String, String>) attributes.get("kakao_account");
 
-        String name = properties.get("name");
         String nickname = properties.get("nickname");
+        String name = kakaoAccount.get("name");
         String email = kakaoAccount.get("email");
 
         return accountSupplier.supply(social, socialId, name, nickname, email);
