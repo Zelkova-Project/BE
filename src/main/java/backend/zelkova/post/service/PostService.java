@@ -56,8 +56,8 @@ public class PostService {
         return postId;
     }
 
-    public Page<PostPreviewResponse> getPostPreviews(Pageable pageable) {
-        return postReader.findAll(pageable);
+    public Page<PostPreviewResponse> getPostPreviews(Category category, Pageable pageable) {
+        return postReader.findAll(category, pageable);
     }
 
     public PostResponse getPost(Long postId) {

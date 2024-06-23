@@ -8,6 +8,7 @@ import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.QPostInfoResponse;
 import backend.zelkova.post.dto.response.QPostPreviewResponse;
 import backend.zelkova.post.entity.QPost;
+import backend.zelkova.post.model.Category;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<PostPreviewResponse> retrieveAllPostPreviewResponses(Pageable pageable) {
+    public Page<PostPreviewResponse> retrieveAllPostPreviewResponses(Category category, Pageable pageable) {
         List<PostPreviewResponse> content = jpaQueryFactory
                 .select(new QPostPreviewResponse(
                         post.id,
@@ -35,6 +36,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+
+                .where(post.category.eq(category))
 
                 .fetch();
 
