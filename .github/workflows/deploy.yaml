@@ -20,6 +20,7 @@ jobs:
         with:
           KAKAO_PROPERTIES: ${{ secrets.KAKAO_PROPERTIES }}
           OBJECT_STORAGE_PROPERTIES: ${{ secrets.OBJECT_STORAGE_PROPERTIES }}
+          ACTUATOR_PROPERTIES: ${{ secrets.ACTUATOR_PROPERTIES }}
           RELEASE_PROPERTIES: ${{ secrets.RELEASE_PROPERTIES }}
           MASTER_PROPERTIES: ${{ secrets.MASTER_PROPERTIES }}
 
