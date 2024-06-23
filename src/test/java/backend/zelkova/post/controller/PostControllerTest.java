@@ -56,13 +56,13 @@ class PostControllerTest extends ControllerTestSupport {
 
         PageImpl<PostPreviewResponse> result = new PageImpl<>(contents, PageRequest.of(0, 20), 3);
 
-        given(postService.getPostPreviews(any()))
+        given(postService.getPostPreviews(any(), any()))
                 .willReturn(result);
 
         // when
         // then
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.get("/posts")
+                        RestDocumentationRequestBuilders.get("/posts/board")
                                 .param("page", "0")
                                 .param("size", "20")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +131,7 @@ class PostControllerTest extends ControllerTestSupport {
         // when
         // then
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.get("/posts/{postId}", 1)
+                        RestDocumentationRequestBuilders.get("/posts/detail/{postId}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())

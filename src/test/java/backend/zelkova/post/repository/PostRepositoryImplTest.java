@@ -1,5 +1,7 @@
 package backend.zelkova.post.repository;
 
+import static backend.zelkova.post.model.Category.BOARD;
+
 import backend.zelkova.IntegrationTestSupport;
 import backend.zelkova.account.entity.Account;
 import backend.zelkova.account.repository.AccountRepository;
@@ -7,7 +9,6 @@ import backend.zelkova.helper.HardDeleteSupplier;
 import backend.zelkova.post.dto.response.PostInfoResponse;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.entity.Post;
-import backend.zelkova.post.model.Category;
 import backend.zelkova.post.model.Visibility;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -52,7 +53,7 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
     }
 
     private Post createPost(Account account, String title) {
-        return new Post(account, Category.BOARD, Visibility.PUBLIC, title, "content");
+        return new Post(account, BOARD, Visibility.PUBLIC, title, "content");
     }
 
     @Test
@@ -123,7 +124,7 @@ class PostRepositoryImplTest extends IntegrationTestSupport {
 
         // when
         Page<PostPreviewResponse> noticePreviewResponses = postRepository.retrieveAllPostPreviewResponses(
-                Pageable.ofSize(3));
+                BOARD, Pageable.ofSize(3));
 
         // then
         Assertions.assertThat(noticePreviewResponses.getTotalElements())
