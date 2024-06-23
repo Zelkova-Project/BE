@@ -24,6 +24,11 @@ public class AccountReader {
                 .orElseThrow(() -> new CustomException(ExceptionStatus.NOTFOUND));
     }
 
+    public boolean isPossibleLoginId(String loginId) {
+        return normalAccountRepository.findByLoginId(loginId)
+                .isEmpty();
+    }
+
     public NormalAccount findNormalAccountByLoginId(String loginId) {
         return normalAccountRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException(loginId + "을 찾을 수 없음"));

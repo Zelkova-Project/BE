@@ -71,7 +71,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests.requestMatchers("/signup", "/login/**", "/oauth2/**")
                     .permitAll();
-            authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**")
+            authorizeRequests.requestMatchers(HttpMethod.GET, "/posts/**", "/accounts/**")
                     .permitAll();
             authorizeRequests.requestMatchers("/roles/**", "/swagger-ui/**")
                     .hasRole("ADMIN");
