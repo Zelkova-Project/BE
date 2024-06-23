@@ -7,6 +7,7 @@ import backend.zelkova.post.dto.request.PostUpdateRequest;
 import backend.zelkova.post.dto.request.PostUploadRequest;
 import backend.zelkova.post.dto.response.PostPreviewResponse;
 import backend.zelkova.post.dto.response.PostResponse;
+import backend.zelkova.post.model.Category;
 import backend.zelkova.post.service.PostService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -32,12 +33,13 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping
-    public ResponseEntity<Page<PostPreviewResponse>> getPostPreviews(Pageable pageable) {
-        return ResponseEntity.ok(postService.getPostPreviews(pageable));
+    @GetMapping("/{category}")
+    public ResponseEntity<Page<PostPreviewResponse>> getPostPreviews(@PathVariable Category category,
+                                                                     Pageable pageable) {
+        return ResponseEntity.ok(postService.getPostPreviews(category, pageable));
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/detail/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
     }
