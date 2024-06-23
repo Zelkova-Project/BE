@@ -30,6 +30,7 @@ runs:
       run: |
         echo "${{ inputs.KAKAO_PROPERTIES }}" > ./src/main/resources/application-kakao.properties
         echo "${{ inputs.OBJECT_STORAGE_PROPERTIES }}" > ./src/main/resources/application-object-storage.properties
+        echo "${{ inputs.ACTUATOR_PROPERTIES }}" > ./src/main/resources/application-actuator.properties
         
         if [ "${{ env.BRANCH }}" == "release" ]; then
           echo "${{ inputs.RELEASE_PROPERTIES }}" > ./src/main/resources/application-release.properties
