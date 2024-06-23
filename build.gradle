@@ -68,6 +68,10 @@ dependencies {
     // webSocketSecurity
     implementation 'org.springframework.security:spring-security-messaging'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // monitoring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {
