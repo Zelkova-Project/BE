@@ -10,6 +10,10 @@ inputs:
     description: 오브젝트 스토리지 properties
     required: true
 
+  ACTUATOR_PROPERTIES:
+    description: 모니터링 properties
+    required: true
+
   RELEASE_PROPERTIES:
     description: 릴리즈 properties
 
