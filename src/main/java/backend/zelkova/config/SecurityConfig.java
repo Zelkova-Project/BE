@@ -1,11 +1,13 @@
 package backend.zelkova.config;
 
 import backend.zelkova.account.dto.response.LoginFailureResponse;
+import backend.zelkova.config.filter.RefererValidFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -23,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -39,6 +42,9 @@ public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
 
+    @Value("${login.referer.allow}")
+    private String allowLoginRefererHeader;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(httpSecurityCsrfConfigurer -> {
@@ -48,6 +54,9 @@ public class SecurityConfig {
         });
 
         http.httpBasic(AbstractHttpConfigurer::disable);
+
+        http.addFilterBefore(new RefererValidFilter(allowLoginRefererHeader, authenticationFailureHandler()),
+                UsernamePasswordAuthenticationFilter.class);
 
         http.formLogin(formConfig -> {
             formConfig.usernameParameter("loginId");

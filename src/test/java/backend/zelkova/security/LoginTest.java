@@ -37,6 +37,7 @@ class LoginTest extends ControllerTestSupport {
         // then
         mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/login")
+                                .header("Referer", "http://localhost:8080/login")
                                 .param("loginId", "loginId")
                                 .param("password", "password")
                 )
