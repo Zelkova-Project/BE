@@ -43,7 +43,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
 
     @Value("${login.referer.allow}")
-    private String allowLoginRefererHeader;
+    private List<String> allowLoginRefererHeader;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
