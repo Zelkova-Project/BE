@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,21 +34,24 @@ public class AttachmentManager {
     private final ObjectStorageProperty objectStorageProperty;
     private final AmazonS3 objectStorage;
 
-    public void uploadAttachments(Long postId, List<MultipartFile> attachments) {
+    @Value("${area.objectstorage}")
+    private String area;
+
+    public void uploadAttachments(String domain, Long domainId, List<MultipartFile> attachments) {
         if (CollectionUtils.isEmpty(attachments)) {
             return;
         }
 
-        attachments.forEach(attachment -> this.upload(postId, attachment));
+        attachments.forEach(attachment -> this.upload(domain, domainId, attachment));
     }
 
-    private void upload(Long postId, MultipartFile multipartFile) {
+    private void upload(String domain, Long domainId, MultipartFile multipartFile) {
 
         if (Objects.isNull(multipartFile) || multipartFile.isEmpty()) {
             return;
         }
 
-        String savePath = calculateSavePath(postId);
+        String savePath = calculateSavePath(domain, domainId);
         ObjectMetadata objectMetadata = createObjectMetadata(multipartFile);
 
         try {
@@ -58,14 +62,19 @@ public class AttachmentManager {
         }
     }
 
-    private static String calculateSavePath(Long postId) {
+    private String calculateSavePath(String domain, Long domainId) {
+        String prefix = calculatePrefix(domain, domainId);
+        return prefix + UUID.randomUUID();
+    }
+
+    private String calculatePrefix(String domain, Long domainId) {
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
-        stringJoiner.add("post");
-        stringJoiner.add(postId.toString());
-        stringJoiner.add(UUID.randomUUID().toString());
+        stringJoiner.add(area);
+        stringJoiner.add(domain);
+        stringJoiner.add(domainId.toString());
 
-        return stringJoiner.toString();
+        return stringJoiner + DELIMITER;
     }
 
     private static ObjectMetadata createObjectMetadata(MultipartFile multipartFile) {
@@ -79,8 +88,8 @@ public class AttachmentManager {
         return objectMetadata;
     }
 
-    public List<AttachmentResponse> findFiles(Long postId) {
-        return objectStorage.listObjectsV2(objectStorageProperty.getBucketName(), "post/" + postId)
+    public List<AttachmentResponse> findFiles(String domain, Long domainId) {
+        return objectStorage.listObjectsV2(objectStorageProperty.getBucketName(), calculatePrefix(domain, domainId))
                 .getObjectSummaries().stream()
                 .map(this::toResponse)
                 .toList();
@@ -89,12 +98,21 @@ public class AttachmentManager {
     private AttachmentResponse toResponse(S3ObjectSummary s3ObjectSummary) {
         String key = s3ObjectSummary.getKey();
         ObjectMetadata objectMetadata = objectStorage.getObjectMetadata(objectStorageProperty.getBucketName(), key);
-        String originalFileName = URLDecoder.decode(objectMetadata.getUserMetaDataOf(ORIGINAL_FILE_NAME),
-                StandardCharsets.UTF_8);
+        String originalFileNameMetaData = objectMetadata.getUserMetaDataOf(ORIGINAL_FILE_NAME);
 
+        String originalFileName = getOriginalFileName(originalFileNameMetaData, key);
         String url = getUrl(key);
 
         return new AttachmentResponse(originalFileName, key, url);
+    }
+
+    private String getOriginalFileName(String originalFileNameMetaData, String key) {
+        if (Objects.isNull(originalFileNameMetaData)) {
+            int lastDelimiterIndex = key.lastIndexOf(DELIMITER);
+            return key.substring(lastDelimiterIndex + 1);
+        }
+
+        return URLDecoder.decode(originalFileNameMetaData, StandardCharsets.UTF_8);
     }
 
     private String getUrl(String key) {
@@ -118,8 +136,8 @@ public class AttachmentManager {
         objectStorage.deleteObject(objectStorageProperty.getBucketName(), key);
     }
 
-    public void deleteAll(Long postId) {
-        objectStorage.listObjectsV2(objectStorageProperty.getBucketName(), "post/" + postId)
+    public void deleteAll(String domain, Long domainId) {
+        objectStorage.listObjectsV2(objectStorageProperty.getBucketName(), calculatePrefix(domain, domainId))
                 .getObjectSummaries()
                 .forEach(s3ObjectSummary -> delete(s3ObjectSummary.getKey()));
     }

@@ -31,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class PostService {
 
+    private static final String DOMAIN = "post";
+
     private final AccountReader accountReader;
     private final PostSupplier postSupplier;
     private final PostReader postReader;
@@ -51,7 +53,7 @@ public class PostService {
         Post post = postSupplier.supply(account, category, visibility, title, content);
 
         Long postId = post.getId();
-        attachmentManager.uploadAttachments(postId, attachments);
+        attachmentManager.uploadAttachments(DOMAIN, postId, attachments);
 
         return postId;
     }
@@ -62,7 +64,7 @@ public class PostService {
 
     public PostResponse getPost(Long postId) {
         PostInfoResponse postInfoResponse = postReader.findPostResponseByPostId(postId);
-        List<AttachmentResponse> fileResponses = attachmentManager.findFiles(postId);
+        List<AttachmentResponse> fileResponses = attachmentManager.findFiles(DOMAIN, postId);
         List<PostCommentResponse> postComments = commentReader.findPostComments(postId);
         return new PostResponse(postInfoResponse, fileResponses, postComments);
     }
@@ -79,7 +81,7 @@ public class PostService {
         }
 
         attachmentManager.deleteAttachments(deleteAttachmentKeys);
-        attachmentManager.uploadAttachments(post.getId(), newAttachments);
+        attachmentManager.uploadAttachments(DOMAIN, post.getId(), newAttachments);
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
@@ -106,7 +108,7 @@ public class PostService {
             return;
         }
 
-        attachmentManager.deleteAll(postId);
+        attachmentManager.deleteAll(DOMAIN, postId);
 
         throw new CustomException(ExceptionStatus.NO_PERMISSION);
     }
