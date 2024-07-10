@@ -1,9 +1,11 @@
 package backend.zelkova.account.dto.response;
 
 import backend.zelkova.account.exception.WrongRefererException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+@Slf4j
 public record LoginFailureResponse(LoginFailureCode loginFailureCode) {
 
     public static LoginFailureResponse newInstance(Exception exception) {
@@ -20,6 +22,7 @@ public record LoginFailureResponse(LoginFailureCode loginFailureCode) {
             return new LoginFailureResponse(LoginFailureCode.WRONG_REFERER_HEADER);
         }
 
+        log.debug(exception.getMessage());
         return new LoginFailureResponse(LoginFailureCode.ACCOUNT_PROBLEM);
     }
 }
