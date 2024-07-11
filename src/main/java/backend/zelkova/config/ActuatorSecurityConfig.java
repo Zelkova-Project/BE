@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Profile({"release", "master"})
+@Profile("actuator")
 public class ActuatorSecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
