@@ -30,6 +30,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -54,6 +56,8 @@ public class SecurityConfig {
         });
 
         http.httpBasic(AbstractHttpConfigurer::disable);
+
+        http.securityMatcher(new NegatedRequestMatcher(new AntPathRequestMatcher("/actuator/**")));
 
         http.addFilterBefore(new RefererValidFilter(allowLoginRefererHeader, authenticationFailureHandler()),
                 UsernamePasswordAuthenticationFilter.class);
